@@ -14,49 +14,49 @@ The **Model Context Protocol (MCP)** is a protocol that allows AI assistants (li
 
 ## Configured MCP Servers
 
-### 1. Gemini Image Generator
+### 1. Pollinations.AI Image Generator ✨ **FREE!**
 
-**Purpose**: Generate high-quality images using Google's Gemini AI model.
+**Purpose**: Generate high-quality images using FREE AI models (Flux, DALL-E 3, Stable Diffusion).
+
+**🎉 NO API KEY REQUIRED! Completely FREE!**
 
 **Configuration**: `.cursor/mcp.json`
 
 ```json
 {
-  "gemini-image-generator": {
-    "command": "python",
-    "args": ["-m", "mcp_server_gemini_image_generator"],
-    "env": {
-      "GEMINI_API_KEY": "${env:GEMINI_API_KEY}",
-      "OUTPUT_IMAGE_PATH": "${workspaceFolder}/docs/images"
-    }
+  "pollinations-image": {
+    "command": "npx",
+    "args": ["-y", "@pollinations/mcp-server"]
   }
 }
 ```
 
 **Features**:
-- Text-to-image generation
-- Image-to-image transformation
-- Automatic filename generation
-- Automatic translation of non-English prompts
-- High-resolution output
-- Local image storage
+- ✅ **Completely FREE** - No API keys, no credits
+- ✅ Text-to-image generation with multiple AI models
+- ✅ High-quality output (Flux, Turbo, DALL-E 3, Stable Diffusion)
+- ✅ Fast generation with caching
+- ✅ Customizable dimensions and parameters
+- ✅ Open source (MIT license)
 
 **Available Tools**:
-- `generate_image_from_text` - Creates new images from text descriptions
-- `transform_image_from_encoded` - Transforms base64-encoded images
-- `transform_image_from_file` - Transforms existing image files
+- `generate_image` - Create images from text prompts
+- `list_models` - Get available AI models  
+- `get_image_url` - Get direct URL for embedding
 
 **Usage in Cursor**:
 ```
-@gemini-image-generator generate a Pip-Boy interface mockup
+@pollinations-image Create a Pip-Boy interface mockup with green monochrome display
+@pollinations-image Generate a retro terminal screen with CRT scanlines
 ```
 
 **Setup**:
-1. Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Set environment variable: `GEMINI_API_KEY=your-key-here`
-3. Restart Cursor
+1. Ensure Node.js is installed
+2. Restart Cursor
+3. **That's it!** No API keys needed!
 
-**Repository**: [qhdrl12/mcp-server-gemini-image-generator](https://github.com/MCP-Mirror/qhdrl12_mcp-server-gemini-image-generator)
+**Repository**: [pollinations/pollinations](https://github.com/pollinations/pollinations)  
+**Documentation**: See `docs/POLLINATIONS_MCP_GUIDE.md`
 
 ---
 

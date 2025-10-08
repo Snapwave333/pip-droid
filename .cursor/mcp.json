@@ -1,12 +1,8 @@
 {
   "mcpServers": {
-    "gemini-image-generator": {
-      "command": "python",
-      "args": ["${workspaceFolder}/mcp_server_gemini.py"],
-      "env": {
-        "GEMINI_API_KEY": "${env:GEMINI_API_KEY}",
-        "OUTPUT_IMAGE_PATH": "${workspaceFolder}/docs/images"
-      }
+    "pollinations-image": {
+      "command": "npx",
+      "args": ["-y", "@pollinations/mcp-server"]
     },
     "puppeteer": {
       "command": "npx",
