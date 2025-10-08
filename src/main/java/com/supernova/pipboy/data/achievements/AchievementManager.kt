@@ -273,7 +273,7 @@ class AchievementManager @Inject constructor(
         _achievementUnlocked.emit(unlockedAchievement)
         
         // Play sound
-        soundManager.playAchievementUnlock()
+        soundManager.play(com.supernova.pipboy.audio.SoundEffect.ACHIEVEMENT_UNLOCK)
         
         // Update statistics
         updateStatistics()

@@ -245,7 +245,7 @@ object PredefinedAchievements {
             category = AchievementCategory.STATS,
             xpReward = 5000,
             tier = AchievementTier.LEGENDARY,
-            unlockCondition = UnlockCondition.MaxAllStats()
+            unlockCondition = UnlockCondition.MaxAllStats
         ),
         
         // ========== RADIO (3 achievements) ==========

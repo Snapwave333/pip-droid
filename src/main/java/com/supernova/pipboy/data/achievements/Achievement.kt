@@ -68,7 +68,7 @@ sealed class UnlockCondition {
     // Stats
     data class ReachStatLevel(val stat: String, val level: Int) : UnlockCondition()
     data class ReachTotalLevel(val level: Int) : UnlockCondition()
-    data class MaxAllStats() : UnlockCondition()
+    object MaxAllStats : UnlockCondition()
     
     // Radio
     data class ListenToStations(val count: Int) : UnlockCondition()
@@ -97,7 +97,7 @@ object UnlockConditionConverter {
             is UnlockCondition.CompleteQuestStreak -> "quest_streak:${condition.streak}"
             is UnlockCondition.ReachStatLevel -> "stat_level:${condition.stat}:${condition.level}"
             is UnlockCondition.ReachTotalLevel -> "total_level:${condition.level}"
-            is UnlockCondition.MaxAllStats -> "max_all_stats"
+            UnlockCondition.MaxAllStats -> "max_all_stats"
             is UnlockCondition.ListenToStations -> "listen_stations:${condition.count}"
             is UnlockCondition.ListenDuration -> "listen_duration:${condition.minutes}"
             is UnlockCondition.Custom -> "custom:${condition.conditionId}"
@@ -120,7 +120,7 @@ object UnlockConditionConverter {
             "quest_streak" -> UnlockCondition.CompleteQuestStreak(parts[1].toInt())
             "stat_level" -> UnlockCondition.ReachStatLevel(parts[1], parts[2].toInt())
             "total_level" -> UnlockCondition.ReachTotalLevel(parts[1].toInt())
-            "max_all_stats" -> UnlockCondition.MaxAllStats()
+            "max_all_stats" -> UnlockCondition.MaxAllStats
             "listen_stations" -> UnlockCondition.ListenToStations(parts[1].toInt())
             "listen_duration" -> UnlockCondition.ListenDuration(parts[1].toInt())
             "custom" -> UnlockCondition.Custom(parts[1])
