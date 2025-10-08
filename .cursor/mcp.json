@@ -24,6 +24,13 @@
         "ELEVENLABS_MCP_BASE_PATH": "${workspaceFolder}/docs/audio",
         "ELEVENLABS_MCP_OUTPUT_MODE": "files"
       }
+    },
+    "serena": {
+      "command": "uvx",
+      "args": ["--from", "serena-ai", "serena", "mcp"],
+      "env": {
+        "SERENA_PROJECT_ROOT": "${workspaceFolder}"
+      }
     }
   }
 }

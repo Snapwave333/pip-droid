@@ -259,7 +259,88 @@ Transcribe this audio file with speaker labels
 
 ---
 
-### 5. Puppeteer Browser Automation
+### 5. Serena - Semantic Code Intelligence 🧠
+
+**Purpose**: Revolutionary semantic code understanding using Language Server Protocol for intelligent editing and refactoring.
+
+**🎯 NO API KEY REQUIRED! Auto-installs language servers!**
+
+**Configuration**: `.cursor/mcp.json`
+
+```json
+{
+  "serena": {
+    "command": "uvx",
+    "args": ["--from", "serena-ai", "serena", "mcp"],
+    "env": {
+      "SERENA_PROJECT_ROOT": "${workspaceFolder}"
+    }
+  }
+}
+```
+
+**Features**:
+- 🧠 **Semantic Understanding** - Uses LSP to comprehend code structure
+- 🔍 **Smart Symbol Search** - Find by meaning, not text patterns
+- ✂️ **Symbol-Based Editing** - Modify code by symbol, not line numbers
+- 📊 **Project Analysis** - Automatic architecture understanding
+- 🎯 **Persistent Memory** - Remembers project context across sessions
+- 🔄 **Intelligent Refactoring** - Updates all references automatically
+- ⚡ **20+ Languages** - Kotlin, Java, Python, JavaScript, and more
+
+**Available Tools** (30+ tools):
+- `find_symbol` - Semantic symbol search
+- `find_referencing_symbols` - Find usage locations
+- `replace_symbol_body` - Edit by symbol definition
+- `insert_before_symbol` / `insert_after_symbol` - Smart insertions
+- `get_symbols_overview` - Analyze file structure
+- `onboarding` - Understand project architecture
+- `write_memory` / `read_memory` - Project knowledge storage
+- `search_for_pattern` - Pattern matching
+- `replace_regex` - Regex replacements
+
+**Key Advantages**:
+- **Semantic vs Text**: Understands code meaning, not just text
+- **Symbol-Based**: Edit functions/classes directly
+- **Project Memory**: Knowledge persists across conversations
+- **LSP-Powered**: Uses same tech as IDEs (VS Code, IntelliJ)
+- **Multi-Language**: 20+ languages with full LSP support
+
+**Perfect For Pip-Droid**:
+- Find all ViewModel classes semantically
+- Refactor enum names across entire project
+- Analyze MVVM architecture automatically
+- Remember project conventions and patterns
+- Smart code insertions maintaining structure
+- Cross-file dependency analysis
+
+**Usage in Cursor**:
+```
+Find all ViewModel classes that manage quest data
+Rename PipBoyColor to VaultColor across project
+Insert calculateXP function after refreshQuests()
+Remember: All screens use MVVM architecture
+Analyze the data flow from Repository to UI
+```
+
+**Setup**:
+1. Install UV: `pip install uv` or `curl -LsSf https://astral.sh/uv/install.sh | sh`
+2. Python 3.11+ required
+3. Restart Cursor
+4. **That's it!** Language servers auto-install
+
+**Community**:
+- **13.8k+ GitHub stars**
+- Sponsored by Microsoft VS Code & GitHub
+- 60+ contributors
+- MIT license
+
+**Repository**: [oraios/serena](https://github.com/oraios/serena)  
+**Documentation**: See `docs/SERENA_MCP_GUIDE.md`
+
+---
+
+### 6. Puppeteer Browser Automation
 
 **Purpose**: Provides browser automation capabilities using Puppeteer for web scraping, testing, and interaction.
 
