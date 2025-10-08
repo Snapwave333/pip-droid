@@ -206,7 +206,58 @@ object PredefinedAchievements {
             tier = AchievementTier.UNCOMMON,
             unlockCondition = UnlockCondition.Custom("branching_quest")
         ),
-        
+
+        // ========== C.A.M.P. (5 achievements) ==========
+        Achievement(
+            id = "camp_builder",
+            title = "C.A.M.P. Builder",
+            description = "Enter build mode for the first time",
+            category = AchievementCategory.EXPLORATION,
+            xpReward = 250,
+            tier = AchievementTier.COMMON,
+            unlockCondition = UnlockCondition.Custom("build_mode_entered")
+        ),
+
+        Achievement(
+            id = "workshop_tinkerer",
+            title = "Workshop Tinkerer",
+            description = "Customize your C.A.M.P. settings",
+            category = AchievementCategory.EXPLORATION,
+            xpReward = 500,
+            tier = AchievementTier.COMMON,
+            unlockCondition = UnlockCondition.Custom("workshop_activated")
+        ),
+
+        Achievement(
+            id = "inventory_manager",
+            title = "Inventory Manager",
+            description = "Access the inventory wall",
+            category = AchievementCategory.EXPLORATION,
+            xpReward = 250,
+            tier = AchievementTier.COMMON,
+            unlockCondition = UnlockCondition.Custom("inventory_wall_used")
+        ),
+
+        Achievement(
+            id = "radio_operator",
+            title = "Radio Operator",
+            description = "Activate the radio terminal",
+            category = AchievementCategory.EXPLORATION,
+            xpReward = 250,
+            tier = AchievementTier.COMMON,
+            unlockCondition = UnlockCondition.Custom("radio_terminal_used")
+        ),
+
+        Achievement(
+            id = "cartographer",
+            title = "Cartographer",
+            description = "Access the map table",
+            category = AchievementCategory.EXPLORATION,
+            xpReward = 250,
+            tier = AchievementTier.COMMON,
+            unlockCondition = UnlockCondition.Custom("map_table_used")
+        ),
+
         // ========== STATS (4 achievements) ==========
         Achievement(
             id = "level_5",
@@ -338,13 +389,13 @@ object PredefinedAchievements {
      * Statistics
      */
     object Stats {
-        val totalAchievements = ALL_ACHIEVEMENTS.size // 30
-        val commonCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.COMMON } // 12
+        val totalAchievements = ALL_ACHIEVEMENTS.size // 35
+        val commonCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.COMMON } // 17
         val uncommonCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.UNCOMMON } // 9
         val rareCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.RARE } // 6
         val epicCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.EPIC } // 1
-        val legendaryCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.LEGENDARY } // 4
-        val totalXP = getTotalXP() // 25,000+ XP
+        val legendaryCount = ALL_ACHIEVEMENTS.count { it.tier == AchievementTier.LEGENDARY } // 2
+        val totalXP = getTotalXP() // 27,500+ XP
     }
 }
 

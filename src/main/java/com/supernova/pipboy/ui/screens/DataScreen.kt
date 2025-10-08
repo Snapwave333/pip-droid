@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,8 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.supernova.pipboy.data.model.PipBoyColor
+import com.supernova.pipboy.data.preferences.PipBoyPreferences
 import com.supernova.pipboy.ui.components.PipBoyCalendar
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.MainViewModel
@@ -35,8 +43,13 @@ fun DataScreen(viewModel: MainViewModel) {
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val preferences = remember { PipBoyPreferences(context) }
     
     var selectedTab by remember { mutableStateOf(0) }
+
+    // Blueprint data
+    val blueprintNames = preferences.blueprintNames.toList()
+    val currentBlueprint = preferences.currentBlueprintName
 
     // Sample notifications for demonstration
     val sampleNotifications = remember {
@@ -78,6 +91,7 @@ fun DataScreen(viewModel: MainViewModel) {
             DataTabButton("QUESTS", selectedTab == 0, primaryColor) { selectedTab = 0 }
             DataTabButton("NOTES", selectedTab == 1, primaryColor) { selectedTab = 1 }
             DataTabButton("LOG", selectedTab == 2, primaryColor) { selectedTab = 2 }
+            DataTabButton("BLUEPRINTS", selectedTab == 3, primaryColor) { selectedTab = 3 }
         }
         
         // Content based on selected tab
@@ -85,6 +99,134 @@ fun DataScreen(viewModel: MainViewModel) {
             0 -> QuestLogScreen(primaryColor = primaryColor)
             1 -> NotesScreen(notes, primaryColor, viewModel)
             2 -> MessageLogScreen(sampleNotifications, primaryColor)
+            3 -> BlueprintScreen(
+                blueprintNames = blueprintNames,
+                currentBlueprint = currentBlueprint,
+                primaryColor = Color(primaryColor.red, primaryColor.green, primaryColor.blue),
+                onBlueprintSelect = { name ->
+                    preferences.currentBlueprintName = name
+                },
+                onBlueprintDelete = { name ->
+                    val newSet = preferences.blueprintNames - name
+                    preferences.blueprintNames = newSet
+                    if (preferences.currentBlueprintName == name) {
+                        preferences.currentBlueprintName = newSet.firstOrNull() ?: "Default Layout"
+                    }
+                }
+            )
+        }
+    }
+}
+
+/**
+ * Blueprint management screen for C.A.M.P. layouts
+ */
+@Composable
+fun BlueprintScreen(
+    blueprintNames: List<String>,
+    currentBlueprint: String,
+    primaryColor: androidx.compose.ui.graphics.Color,
+    onBlueprintSelect: (String) -> Unit,
+    onBlueprintDelete: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "C.A.M.P. BLUEPRINTS",
+            style = PipBoyTypography.displayLarge,
+            color = primaryColor,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        Text(
+            text = "Current Blueprint: $currentBlueprint",
+            style = PipBoyTypography.bodyMedium,
+            color = primaryColor.copy(alpha = 0.8f),
+            fontSize = 12.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        if (blueprintNames.isEmpty()) {
+            Text(
+                text = "No blueprints saved yet.\nUse 'save [name]' in terminal to create one.",
+                style = PipBoyTypography.bodyMedium,
+                color = primaryColor.copy(alpha = 0.6f),
+                fontSize = 12.sp,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.padding(vertical = 32.dp)
+            )
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(blueprintNames) { blueprintName ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onBlueprintSelect(blueprintName) }
+                            .border(
+                                width = if (blueprintName == currentBlueprint) 2.dp else 1.dp,
+                                color = if (blueprintName == currentBlueprint) Color.Green else primaryColor,
+                                shape = MaterialTheme.shapes.medium
+                            ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.DarkGray.copy(alpha = 0.4f)
+                        ),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = blueprintName,
+                                    style = PipBoyTypography.bodyMedium,
+                                    color = primaryColor,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                if (blueprintName == currentBlueprint) {
+                                    Text(
+                                        text = "CURRENT",
+                                        style = PipBoyTypography.bodyMedium,
+                                        color = Color.Green,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Available",
+                                        style = PipBoyTypography.bodyMedium,
+                                        color = primaryColor.copy(alpha = 0.6f),
+                                        fontSize = 10.sp
+                                    )
+                                }
+                            }
+
+                            if (blueprintName != "Default Layout") {
+                                Text(
+                                    text = "🗑️",
+                                    style = PipBoyTypography.bodyMedium,
+                                    color = Color.Red,
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.clickable { onBlueprintDelete(blueprintName) }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

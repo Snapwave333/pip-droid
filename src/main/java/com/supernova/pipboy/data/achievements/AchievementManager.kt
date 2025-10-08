@@ -97,6 +97,7 @@ class AchievementManager @Inject constructor(
                 is AchievementEvent.StatLevelReached -> handleStatLevelReached(event.stat, event.level)
                 is AchievementEvent.TabVisited -> handleTabVisited()
                 is AchievementEvent.SettingsChanged -> handleSettingsChanged()
+                is AchievementEvent.CampModuleUsed -> handleCampModuleUsed(event.moduleName)
                 is AchievementEvent.CustomEvent -> handleCustomEvent(event.eventId)
             }
         }
@@ -216,7 +217,16 @@ class AchievementManager @Inject constructor(
         // Track settings changes for Settings Tinkerer achievement
         incrementProgress("settings_tinkerer")
     }
-    
+
+    private suspend fun handleCampModuleUsed(moduleName: String) {
+        when (moduleName) {
+            "Workshop Bench" -> unlockAchievement("workshop_tinkerer")
+            "Inventory Wall" -> unlockAchievement("inventory_manager")
+            "Radio Terminal" -> unlockAchievement("radio_operator")
+            "Map Table" -> unlockAchievement("cartographer")
+        }
+    }
+
     private suspend fun handleCustomEvent(eventId: String) {
         when (eventId) {
             "boot_complete" -> unlockAchievement("vault_dweller")
@@ -364,6 +374,7 @@ sealed class AchievementEvent {
     data class StatLevelReached(val stat: String, val level: Int) : AchievementEvent()
     object TabVisited : AchievementEvent()
     object SettingsChanged : AchievementEvent()
+    data class CampModuleUsed(val moduleName: String) : AchievementEvent()
     data class CustomEvent(val eventId: String) : AchievementEvent()
 }
 

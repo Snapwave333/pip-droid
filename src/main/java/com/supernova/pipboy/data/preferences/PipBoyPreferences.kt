@@ -130,6 +130,19 @@ class PipBoyPreferences(context: Context) {
         get() = prefs.getBoolean(KEY_ID_BADGE_VISIBLE, false)
         set(value) = prefs.edit { putBoolean(KEY_ID_BADGE_VISIBLE, value) }
 
+    // C.A.M.P. Blueprint preferences
+    var currentBlueprintName: String
+        get() = prefs.getString(KEY_CURRENT_BLUEPRINT, "Default Layout") ?: "Default Layout"
+        set(value) = prefs.edit { putString(KEY_CURRENT_BLUEPRINT, value) }
+
+    var blueprintNames: Set<String>
+        get() = prefs.getStringSet(KEY_BLUEPRINT_NAMES, setOf("Default Layout")) ?: setOf("Default Layout")
+        set(value) = prefs.edit { putStringSet(KEY_BLUEPRINT_NAMES, value) }
+
+    var campBuildModeEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CAMP_BUILD_MODE, false)
+        set(value) = prefs.edit { putBoolean(KEY_CAMP_BUILD_MODE, value) }
+
     /**
      * Reset all preferences to default values
      */
@@ -179,5 +192,8 @@ class PipBoyPreferences(context: Context) {
         private const val KEY_ID_BADGE_VAULT_NUMBER = "id_badge_vault_number"
         private const val KEY_ID_BADGE_RANK = "id_badge_rank"
         private const val KEY_ID_BADGE_VISIBLE = "id_badge_visible"
+        private const val KEY_CURRENT_BLUEPRINT = "current_blueprint"
+        private const val KEY_BLUEPRINT_NAMES = "blueprint_names"
+        private const val KEY_CAMP_BUILD_MODE = "camp_build_mode"
     }
 }

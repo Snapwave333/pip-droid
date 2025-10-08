@@ -82,6 +82,7 @@ private fun PipBoyTabItem(
  */
 private val PipBoyTab.displayName: String
     get() = when (this) {
+        PipBoyTab.HOME -> "CAMP"
         PipBoyTab.STATUS -> "STAT"
         PipBoyTab.INVENTORY -> "INV"
         PipBoyTab.DATA -> "DATA"

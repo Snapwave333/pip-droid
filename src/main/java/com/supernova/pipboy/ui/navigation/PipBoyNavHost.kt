@@ -89,6 +89,7 @@ fun PipBoyNavHost(viewModel: MainViewModel) {
                 contentAlignment = Alignment.Center
             ) {
                 when (currentTab) {
+                    PipBoyTab.HOME -> CampScreen(viewModel, app.achievementManager)
                     PipBoyTab.STATUS -> StatusScreen(viewModel)
                     PipBoyTab.INVENTORY -> InventoryScreen(viewModel)
                     PipBoyTab.DATA -> DataScreen(viewModel)

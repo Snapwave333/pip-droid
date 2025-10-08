@@ -80,11 +80,23 @@ class TerminalCommands(private val context: Context) {
                     "vats" -> vatsCommand()
                     "fatman" -> fatManCommand()
                     "nuka", "nuka-cola", "nukacola" -> nukaColaCommand()
+                    // C.A.M.P. Commands
+                    "camp" -> campCommand(args)
+                    "build" -> buildModeCommand()
+                    "workshop" -> workshopCommand()
+                    "inventory" -> inventoryWallCommand()
+                    "radio" -> radioTerminalCommand()
+                    "map" -> mapTableCommand()
+                    "status" -> vaultStatusCommand()
                     "dogmeat" -> dogmeatCommand()
                     "fisto" -> fistoCommand()
                     "mrhandy", "mr-handy" -> mrHandyCommand()
                     "please" -> pleaseCommand()
                     "assume" -> assumeCommand()
+                    // Blueprint Commands
+                    "blueprint" -> blueprintCommand(args)
+                    "save" -> saveBlueprintCommand(args)
+                    "load" -> loadBlueprintCommand(args)
                     "lobotomite" -> lobotomiteCommand()
                     "patrolling" -> patrollingCommand()
                     "ring" -> ringCommand()
@@ -115,6 +127,11 @@ class TerminalCommands(private val context: Context) {
             "  inv, inventory - Display inventory",
             "  radio          - Radio controls",
             "  map            - Map information",
+            "  camp           - C.A.M.P. management",
+            "  build          - Enter build mode",
+            "  blueprint      - Blueprint management",
+            "  save [name]    - Save C.A.M.P. layout",
+            "  load [name]    - Load C.A.M.P. layout",
             "  info, about    - About Pip-Boy 3000",
             "  version        - System version",
             "  clear, cls     - Clear screen",
@@ -772,6 +789,317 @@ class TerminalCommands(private val context: Context) {
             "Achievement unlocked: Self-Destruct Survivor",
             ""
         ))
+    }
+
+    // ========== C.A.M.P. COMMANDS ==========
+
+    private suspend fun campCommand(args: String): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== C.A.M.P. - Construction and Assembly Mobile Platform ===",
+            "",
+            "Welcome to your Vault-Tec approved construction platform.",
+            "",
+            "Available C.A.M.P. modules:",
+            "• Radio Terminal - Stream Fallout radio stations",
+            "• Inventory Wall - App shortcuts and inventory",
+            "• Workshop Bench - Settings and customization",
+            "• Map Table - GPS and location services",
+            "• Vault Status - System stats and monitoring",
+            "• Weather Station - Weather and time display",
+            "",
+            "Use 'camp status' to check C.A.M.P. integrity",
+            "Use 'camp build' to enter build mode",
+            "Use 'camp modules' to list available modules",
+            ""
+        ))
+    }
+
+    private suspend fun buildModeCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== BUILD MODE ACTIVATED ===",
+            "",
+            "🔨 Construction protocols online.",
+            "Pip-Boy cursor changed to construction mode.",
+            "Build budget: 100 units available.",
+            "",
+            "Available modules for placement:",
+            "• Radio Terminal (20 units)",
+            "• Inventory Wall (25 units)",
+            "• Workshop Bench (30 units)",
+            "• Map Table (15 units)",
+            "• Vault Status (10 units)",
+            "• Weather Station (5 units)",
+            "",
+            "Type 'build exit' to return to normal mode.",
+            ""
+        ))
+    }
+
+    private suspend fun workshopCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== WORKSHOP BENCH ACTIVATED ===",
+            "",
+            "Workshop module deployed.",
+            "Customization protocols online.",
+            "",
+            "Available customizations:",
+            "• Color themes",
+            "• CRT effects",
+            "• Sound settings",
+            "• Achievement tracking",
+            "",
+            "Achievement unlocked: Workshop Tinkerer",
+            ""
+        ))
+    }
+
+    private suspend fun inventoryWallCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== INVENTORY WALL DEPLOYED ===",
+            "",
+            "Inventory module activated.",
+            "App shortcuts organized and displayed.",
+            "",
+            "Quick access to:",
+            "• Recently used apps",
+            "• Favorite applications",
+            "• System utilities",
+            "",
+            "Achievement unlocked: Inventory Manager",
+            ""
+        ))
+    }
+
+    private suspend fun radioTerminalCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== RADIO TERMINAL ONLINE ===",
+            "",
+            "Radio beacon deployed.",
+            "Broadcasting Diamond City Radio.",
+            "",
+            "Available stations:",
+            "• Galaxy News Radio",
+            "• Radio New Vegas",
+            "• Diamond City Radio",
+            "• Classical Radio",
+            "",
+            "Achievement unlocked: Radio Operator",
+            ""
+        ))
+    }
+
+    private suspend fun mapTableCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== MAP TABLE DEPLOYED ===",
+            "",
+            "Map module activated.",
+            "GPS and location services online.",
+            "",
+            "Current features:",
+            "• Real-time location tracking",
+            "• Weather overlay",
+            "• Points of interest",
+            "",
+            "Achievement unlocked: Cartographer",
+            ""
+        ))
+    }
+
+    private suspend fun vaultStatusCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== VAULT STATUS MONITOR ===",
+            "",
+            "Vault integrity: 92%",
+            "All systems nominal.",
+            "",
+            "Current readings:",
+            "• Battery: 87%",
+            "• CPU Usage: 23%",
+            "• Memory: 45%",
+            "• Temperature: 42°C",
+            "• Storage: 67% used",
+            "",
+            "Status: All systems operational",
+            ""
+        ))
+    }
+
+    // ========== BLUEPRINT COMMANDS ==========
+
+    private suspend fun blueprintCommand(args: String): TerminalOutput {
+        val argsList = args.trim().split(" ")
+        val preferences = preferences
+
+        return when {
+            args.isBlank() -> TerminalOutput(listOf(
+                "=== C.A.M.P. BLUEPRINTS ===",
+                "",
+                "Current Blueprint: ${preferences.currentBlueprintName}",
+                "Available Blueprints: ${preferences.blueprintNames.joinToString(", ")}",
+                "",
+                "Commands:",
+                "• blueprint list - Show all blueprints",
+                "• blueprint create [name] - Create new blueprint",
+                "• blueprint delete [name] - Delete blueprint",
+                "• blueprint load [name] - Load blueprint",
+                "• blueprint save [name] - Save current layout",
+                ""
+            ))
+
+            args == "list" -> TerminalOutput(listOf(
+                "=== AVAILABLE BLUEPRINTS ===",
+                "",
+                preferences.blueprintNames.joinToString("\n") { "• $it" },
+                "",
+                "Current: ${preferences.currentBlueprintName}",
+                ""
+            ))
+
+            args.startsWith("create") -> {
+                if (argsList.size < 2) {
+                    TerminalOutput(listOf(
+                        "Usage: blueprint create [name]",
+                        "Example: blueprint create \"Recon Mode\"",
+                        ""
+                    ), isError = true)
+                } else {
+                    val name = argsList[1]
+                    preferences.blueprintNames = preferences.blueprintNames + name
+                    preferences.currentBlueprintName = name
+                    TerminalOutput(listOf(
+                        "Blueprint created: $name",
+                        "Set as current blueprint.",
+                        ""
+                    ))
+                }
+            }
+
+            args.startsWith("delete") -> {
+                if (argsList.size < 2) {
+                    TerminalOutput(listOf(
+                        "Usage: blueprint delete [name]",
+                        "Example: blueprint delete \"Recon Mode\"",
+                        ""
+                    ), isError = true)
+                } else {
+                    val name = argsList[1]
+                    val newSet = preferences.blueprintNames - name
+                    preferences.blueprintNames = newSet
+                    if (preferences.currentBlueprintName == name) {
+                        preferences.currentBlueprintName = newSet.firstOrNull() ?: "Default Layout"
+                    }
+                    TerminalOutput(listOf(
+                        "Blueprint deleted: $name",
+                        "Current blueprint: ${preferences.currentBlueprintName}",
+                        ""
+                    ))
+                }
+            }
+
+            args.startsWith("load") -> {
+                if (argsList.size < 2) {
+                    TerminalOutput(listOf(
+                        "Usage: blueprint load [name]",
+                        "Example: blueprint load \"Recon Mode\"",
+                        ""
+                    ), isError = true)
+                } else {
+                    val name = argsList[1]
+                    if (name in preferences.blueprintNames) {
+                        preferences.currentBlueprintName = name
+                        TerminalOutput(listOf(
+                            "Blueprint loaded: $name",
+                            "C.A.M.P. layout updated.",
+                            ""
+                        ))
+                    } else {
+                        TerminalOutput(listOf(
+                            "Blueprint not found: $name",
+                            "Use 'blueprint list' to see available blueprints.",
+                            ""
+                        ), isError = true)
+                    }
+                }
+            }
+
+            else -> TerminalOutput(listOf(
+                "Unknown blueprint command: $args",
+                "Use 'blueprint list' for available commands.",
+                ""
+            ), isError = true)
+        }
+    }
+
+    private suspend fun saveBlueprintCommand(args: String): TerminalOutput {
+        val argsList = args.trim().split(" ")
+        val preferences = preferences
+
+        return when {
+            args.isBlank() -> {
+                val name = "Blueprint_${System.currentTimeMillis()}"
+                preferences.blueprintNames = preferences.blueprintNames + name
+                preferences.currentBlueprintName = name
+                TerminalOutput(listOf(
+                    "Blueprint saved: $name",
+                    "Current layout preserved.",
+                    ""
+                ))
+            }
+
+            argsList.size == 1 -> {
+                val name = argsList[0]
+                preferences.blueprintNames = preferences.blueprintNames + name
+                preferences.currentBlueprintName = name
+                TerminalOutput(listOf(
+                    "Blueprint saved: $name",
+                    "Current layout preserved.",
+                    ""
+                ))
+            }
+
+            else -> TerminalOutput(listOf(
+                "Usage: save [name]",
+                "Example: save \"Recon Mode\"",
+                ""
+            ), isError = true)
+        }
+    }
+
+    private suspend fun loadBlueprintCommand(args: String): TerminalOutput {
+        val argsList = args.trim().split(" ")
+        val preferences = preferences
+
+        return when {
+            args.isBlank() -> TerminalOutput(listOf(
+                "Usage: load [name]",
+                "Example: load \"Recon Mode\"",
+                ""
+            ), isError = true)
+
+            argsList.size == 1 -> {
+                val name = argsList[0]
+                if (name in preferences.blueprintNames) {
+                    preferences.currentBlueprintName = name
+                    TerminalOutput(listOf(
+                        "Blueprint loaded: $name",
+                        "C.A.M.P. layout updated.",
+                        ""
+                    ))
+                } else {
+                    TerminalOutput(listOf(
+                        "Blueprint not found: $name",
+                        "Use 'blueprint list' to see available blueprints.",
+                        ""
+                    ), isError = true)
+                }
+            }
+
+            else -> TerminalOutput(listOf(
+                "Usage: load [name]",
+                "Example: load \"Recon Mode\"",
+                ""
+            ), isError = true)
+        }
     }
 
     private fun unknownCommand(command: String): TerminalOutput {

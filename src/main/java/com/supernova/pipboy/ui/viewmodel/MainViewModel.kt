@@ -22,7 +22,7 @@ class MainViewModel(
 ) : ViewModel() {
 
     // Current tab selection
-    private val _currentTab = MutableStateFlow(PipBoyTab.STATUS)
+    private val _currentTab = MutableStateFlow(PipBoyTab.HOME)
     val currentTab: StateFlow<PipBoyTab> = _currentTab
 
     // Primary color state
@@ -136,7 +136,7 @@ class MainViewModel(
  * Available tabs in the Pip-Boy interface
  */
 enum class PipBoyTab {
-    STATUS, INVENTORY, DATA, MAP, RADIO, ACHIEVEMENTS, SETTINGS
+    HOME, STATUS, INVENTORY, DATA, MAP, RADIO, ACHIEVEMENTS, SETTINGS
 }
 
 /**
