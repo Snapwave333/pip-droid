@@ -20,6 +20,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.supernova.pipboy.PipBoyApplication
+import com.supernova.pipboy.data.achievements.AchievementEvent
 import com.supernova.pipboy.data.model.PipBoyColor
 import com.supernova.pipboy.data.terminal.TerminalCommands
 import com.supernova.pipboy.ui.theme.PipBoyTypography
@@ -35,6 +37,7 @@ fun TerminalScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val app = context.applicationContext as PipBoyApplication
     val terminalCommands = remember { TerminalCommands(context) }
     val scope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
@@ -141,6 +144,11 @@ fun TerminalScreen(
                             // Execute command
                             scope.launch {
                                 val output = terminalCommands.executeCommand(command)
+                                
+                                // Track achievement for command execution
+                                app.achievementManager.trackEvent(
+                                    AchievementEvent.CommandExecuted(command)
+                                )
                                 
                                 // Check for special commands
                                 when {

@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.supernova.pipboy.PipBoyApplication
+import com.supernova.pipboy.data.achievements.AchievementEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -111,6 +113,14 @@ class QuestRepository(private val context: Context) {
         if (updatedQuest.status == QuestStatus.COMPLETED && quest.status != QuestStatus.COMPLETED) {
             unlockDependentQuests(updatedQuest)
             awardQuestRewards(updatedQuest)
+            
+            // Track achievement for quest completion
+            try {
+                val app = context.applicationContext as? PipBoyApplication
+                app?.achievementManager?.trackEvent(AchievementEvent.QuestCompleted)
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to track quest completion achievement")
+            }
         }
         
         return updatedQuest
