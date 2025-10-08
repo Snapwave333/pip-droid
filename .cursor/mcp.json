@@ -11,6 +11,10 @@
     "promptx": {
       "command": "npx",
       "args": ["-y", "@promptx/mcp-server"]
+    },
+    "desktop-commander": {
+      "command": "npx",
+      "args": ["-y", "desktop-commander"]
     }
   }
 }

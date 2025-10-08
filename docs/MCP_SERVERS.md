@@ -116,7 +116,74 @@ Activate Nuwa, create an Android launcher specialist
 
 ---
 
-### 3. Puppeteer Browser Automation
+### 3. Desktop Commander - System Control ⚡
+
+**Purpose**: Give AI direct terminal access, file system control, and surgical code editing capabilities.
+
+**🎉 NO API KEY REQUIRED! Auto-updates enabled!**
+
+**Configuration**: `.cursor/mcp.json`
+
+```json
+{
+  "desktop-commander": {
+    "command": "npx",
+    "args": ["-y", "desktop-commander"]
+  }
+}
+```
+
+**Features**:
+- ⚡ **Terminal Control** - Execute any command on your system
+- 📁 **File System Access** - Search, read, write files anywhere
+- ✂️ **Surgical Edits** - Precise diff-based file editing
+- 🔍 **Code Analysis** - Explore complex codebases (full file reading)
+- 🤖 **System Automation** - Automate tasks across entire OS
+- 📂 **Multi-Project** - Work across multiple projects simultaneously
+- 🔄 **Auto-Updates** - Automatically updates on restart
+
+**Available Tools**:
+- `execute_command` - Run terminal commands with output
+- `search_files` - Find files and code patterns
+- `read_file` - Read full files (not chunked!)
+- `write_file` - Create or overwrite files
+- `edit_file` - Make surgical edits with diff preview
+- `list_directory` - Browse file system
+- `get_usage_stats` - View your usage analytics
+
+**Key Advantages**:
+- Works with **entire OS**, not just IDE
+- Reads **full files** for complete context
+- **Atomic edits** - all changes succeed or fail together
+- **Multi-project** workflows seamlessly
+- Executes changes **in one go** (no constant review)
+
+**Usage in Cursor**:
+```
+Build debug APK and install on device
+Search all files containing 'QuestRepository'
+In MainActivity.kt, add crash logging to onCreate
+Stage all quest-related changes and commit
+```
+
+**Setup**:
+1. Ensure Node.js v16+ installed
+2. Restart Cursor
+3. **That's it!** Start commanding your system!
+
+**Security**:
+- Asks permission for dangerous commands
+- Shows diff preview before file edits
+- Local analytics (not shared externally)
+- Atomic operations for safety
+
+**Repository**: [wonderwhy-er/DesktopCommanderMCP](https://github.com/wonderwhy-er/desktopcommandermcp)  
+**Website**: https://desktopcommander.app/  
+**Documentation**: See `docs/DESKTOP_COMMANDER_GUIDE.md`
+
+---
+
+### 4. Puppeteer Browser Automation
 
 **Purpose**: Provides browser automation capabilities using Puppeteer for web scraping, testing, and interaction.
 
