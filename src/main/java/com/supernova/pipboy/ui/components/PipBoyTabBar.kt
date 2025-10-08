@@ -87,4 +87,5 @@ private val PipBoyTab.displayName: String
         PipBoyTab.DATA -> "DATA"
         PipBoyTab.MAP -> "MAP"
         PipBoyTab.RADIO -> "RADIO"
+        PipBoyTab.ACHIEVEMENTS -> "ACHV"
     }

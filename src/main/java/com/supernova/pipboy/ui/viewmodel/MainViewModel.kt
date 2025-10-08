@@ -114,7 +114,7 @@ class MainViewModel(
  * Available tabs in the Pip-Boy interface
  */
 enum class PipBoyTab {
-    STATUS, INVENTORY, DATA, MAP, RADIO
+    STATUS, INVENTORY, DATA, MAP, RADIO, ACHIEVEMENTS
 }
 
 /**

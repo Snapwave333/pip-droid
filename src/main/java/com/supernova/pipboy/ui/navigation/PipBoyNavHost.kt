@@ -6,7 +6,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.supernova.pipboy.PipBoyApplication
 import com.supernova.pipboy.ui.components.PipBoyTabBar
 import com.supernova.pipboy.ui.navigation.back.PredictiveBackHandler
 import com.supernova.pipboy.ui.screens.*
@@ -21,6 +23,7 @@ import com.supernova.pipboy.data.repository.SystemRepository
 @Composable
 fun PipBoyNavHost(viewModel: MainViewModel) {
     val currentTab by viewModel.currentTab.collectAsState()
+    val app = LocalContext.current.applicationContext as PipBoyApplication
 
     // Wrap content with Predictive Back Handler
     PredictiveBackHandler(
@@ -48,6 +51,9 @@ fun PipBoyNavHost(viewModel: MainViewModel) {
                     PipBoyTab.DATA -> DataScreen(viewModel)
                     PipBoyTab.MAP -> MapScreen(viewModel)
                     PipBoyTab.RADIO -> RadioScreen(viewModel)
+                    PipBoyTab.ACHIEVEMENTS -> AchievementsScreen(
+                        achievementManager = app.achievementManager
+                    )
                 }
             }
 
