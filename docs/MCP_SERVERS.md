@@ -60,7 +60,63 @@ The **Model Context Protocol (MCP)** is a protocol that allows AI assistants (li
 
 ---
 
-### 2. Puppeteer Browser Automation
+### 2. PromptX - AI Expert Platform 🎭
+
+**Purpose**: Transform AI into professional experts with specialized knowledge and cognitive memory.
+
+**🎉 NO API KEY REQUIRED! Zero configuration!**
+
+**Configuration**: `.cursor/mcp.json`
+
+```json
+{
+  "promptx": {
+    "command": "npx",
+    "args": ["-y", "@promptx/mcp-server"]
+  }
+}
+```
+
+**Features**:
+- 🎭 **23+ Professional Roles** - Product managers, architects, developers, designers
+- 🔧 **Smart Tool Integration** - Connect APIs, databases, services
+- 🧠 **Cognitive Memory** - AI remembers context across sessions
+- 💬 **Natural Conversation** - Just talk naturally, no commands
+- ✍️ **Content Creation** - Writer role for authentic, human-like content
+- 🎨 **Custom Roles** - Nuwa creates specialized experts
+- 📊 **Built-in Tools** - Excel, Word, PDF processing
+
+**Available Expert Roles**:
+- Product Manager, UX Designer, Software Architect
+- Backend/Frontend/Mobile Developers
+- DevOps, QA, Security Engineers
+- Data Scientists, Business Analysts
+- Content Writers, Copywriters
+- AI/ML Engineers, Performance Experts
+
+**Special Features**:
+- **Nuwa** - Create custom AI experts with natural language
+- **Luban** - Integrate any API or service in minutes
+- **Writer** - Generate authentic, non-AI-sounding content
+
+**Usage in Cursor**:
+```
+Show me available experts
+I need a product manager expert
+Activate Nuwa, create an Android launcher specialist
+```
+
+**Setup**:
+1. Ensure Node.js is installed
+2. Restart Cursor
+3. **That's it!** Start talking to experts!
+
+**Repository**: [deepractice/promptx](https://github.com/deepractice/promptx)  
+**Documentation**: See `docs/PROMPTX_MCP_GUIDE.md`
+
+---
+
+### 3. Puppeteer Browser Automation
 
 **Purpose**: Provides browser automation capabilities using Puppeteer for web scraping, testing, and interaction.
 

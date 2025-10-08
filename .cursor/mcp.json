@@ -7,6 +7,10 @@
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "promptx": {
+      "command": "npx",
+      "args": ["-y", "@promptx/mcp-server"]
     }
   }
 }
