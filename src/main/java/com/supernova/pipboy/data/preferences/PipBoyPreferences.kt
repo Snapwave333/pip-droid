@@ -108,6 +108,10 @@ class PipBoyPreferences(context: Context) {
     var radioMinutes: Int
         get() = prefs.getInt(KEY_RADIO_MINUTES, 0)
         set(value) = prefs.edit { putInt(KEY_RADIO_MINUTES, value) }
+    
+    var tabVisits: Int
+        get() = prefs.getInt(KEY_TAB_VISITS, 0)
+        set(value) = prefs.edit { putInt(KEY_TAB_VISITS, value) }
 
     /**
      * Reset all preferences to default values
@@ -153,5 +157,6 @@ class PipBoyPreferences(context: Context) {
         private const val KEY_QUEST_STREAK = "quest_streak"
         private const val KEY_LISTENED_STATIONS = "listened_stations"
         private const val KEY_RADIO_MINUTES = "radio_minutes"
+        private const val KEY_TAB_VISITS = "tab_visits"
     }
 }

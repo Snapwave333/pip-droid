@@ -1,7 +1,10 @@
 package com.supernova.pipboy.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.supernova.pipboy.PipBoyApplication
+import com.supernova.pipboy.data.achievements.AchievementEvent
 import com.supernova.pipboy.data.model.PipBoyColor
 import com.supernova.pipboy.data.preferences.PipBoyPreferences
 import com.supernova.pipboy.data.repository.AppRepository
@@ -14,7 +17,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val systemRepository: SystemRepository,
     private val appRepository: AppRepository,
-    private val preferences: PipBoyPreferences
+    private val preferences: PipBoyPreferences,
+    private val context: Context
 ) : ViewModel() {
 
     // Current tab selection
@@ -71,6 +75,9 @@ class MainViewModel(
     fun updatePrimaryColor(color: PipBoyColor) {
         _primaryColor.value = color
         preferences.primaryColor = color
+        
+        // Track settings change for achievement
+        trackSettingsChange()
     }
 
     /**
@@ -81,6 +88,21 @@ class MainViewModel(
         preferences.crtScanlinesEnabled = effects.scanlines
         preferences.crtFlickerEnabled = effects.flicker
         preferences.crtDistortionEnabled = effects.distortion
+        
+        // Track settings change for achievement
+        trackSettingsChange()
+    }
+    
+    /**
+     * Track settings changes for achievements
+     */
+    private fun trackSettingsChange() {
+        try {
+            val app = context.applicationContext as? PipBoyApplication
+            app?.achievementManager?.trackEvent(AchievementEvent.SettingsChanged)
+        } catch (e: Exception) {
+            // Silently fail if app context not available
+        }
     }
 
     /**

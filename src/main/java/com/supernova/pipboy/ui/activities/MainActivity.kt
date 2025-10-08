@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
             val viewModel: MainViewModel = viewModel(
                 factory = object : ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        return MainViewModel(app.systemRepository, app.appRepository, app.preferences) as T
+                        return MainViewModel(app.systemRepository, app.appRepository, app.preferences, applicationContext) as T
                     }
                 }
             )

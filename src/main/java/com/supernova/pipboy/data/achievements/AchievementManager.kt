@@ -95,6 +95,8 @@ class AchievementManager @Inject constructor(
                 is AchievementEvent.QuestCompleted -> handleQuestCompleted()
                 is AchievementEvent.StationListened -> handleStationListened(event.stationId)
                 is AchievementEvent.StatLevelReached -> handleStatLevelReached(event.stat, event.level)
+                is AchievementEvent.TabVisited -> handleTabVisited()
+                is AchievementEvent.SettingsChanged -> handleSettingsChanged()
                 is AchievementEvent.CustomEvent -> handleCustomEvent(event.eventId)
             }
         }
@@ -197,6 +199,22 @@ class AchievementManager @Inject constructor(
         
         // Check if all stats are maxed
         // This should be called from S.P.E.C.I.A.L. system
+    }
+    
+    private suspend fun handleTabVisited() {
+        // Track tab visits for Explorer achievement
+        val tabVisits = preferences.tabVisits + 1
+        preferences.tabVisits = tabVisits
+        
+        // Explorer unlocks after visiting 20 different tabs
+        if (tabVisits >= 20) {
+            unlockAchievement("explorer")
+        }
+    }
+    
+    private suspend fun handleSettingsChanged() {
+        // Track settings changes for Settings Tinkerer achievement
+        incrementProgress("settings_tinkerer")
     }
     
     private suspend fun handleCustomEvent(eventId: String) {
@@ -344,6 +362,8 @@ sealed class AchievementEvent {
     object QuestCompleted : AchievementEvent()
     data class StationListened(val stationId: String) : AchievementEvent()
     data class StatLevelReached(val stat: String, val level: Int) : AchievementEvent()
+    object TabVisited : AchievementEvent()
+    object SettingsChanged : AchievementEvent()
     data class CustomEvent(val eventId: String) : AchievementEvent()
 }
 

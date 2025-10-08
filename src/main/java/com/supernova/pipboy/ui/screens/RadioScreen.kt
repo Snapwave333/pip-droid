@@ -12,11 +12,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.supernova.pipboy.PipBoyApplication
+import com.supernova.pipboy.data.achievements.AchievementEvent
 import com.supernova.pipboy.data.model.PipBoyColor
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Safe Radio Screen with Fallout.FM stations (no streaming for stability)
@@ -28,11 +33,15 @@ fun RadioScreen(
     initialStationId: String? = null
 ) {
     val primaryColor by viewModel.primaryColor.collectAsState()
+    val context = LocalContext.current
+    val app = context.applicationContext as PipBoyApplication
+    val scope = rememberCoroutineScope()
     
     // Simple state without media player
     var isPlaying by remember { mutableStateOf(false) }
     var volume by remember { mutableStateOf(75) }
     var currentStationIndex by remember { mutableStateOf(0) }
+    var listeningTimeSeconds by remember { mutableStateOf(0) }
     
     // Fallout.FM stations from https://fallout.fm/
     val stations = remember {
@@ -49,6 +58,32 @@ fun RadioScreen(
     }
     
     val currentStation = stations[currentStationIndex]
+    
+    // Track listening time and achievements
+    LaunchedEffect(isPlaying) {
+        if (isPlaying) {
+            while (isPlaying) {
+                delay(1000) // 1 second
+                listeningTimeSeconds++
+                
+                // Track every minute
+                if (listeningTimeSeconds % 60 == 0) {
+                    app.achievementManager.trackEvent(
+                        AchievementEvent.StationListened("any_station")
+                    )
+                }
+            }
+        }
+    }
+    
+    // Track station changes
+    LaunchedEffect(currentStationIndex) {
+        if (currentStationIndex > 0 || isPlaying) {
+            app.achievementManager.trackEvent(
+                AchievementEvent.StationListened(currentStation.first)
+            )
+        }
+    }
 
     Column(
         modifier = Modifier

@@ -8,7 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
 import com.supernova.pipboy.PipBoyApplication
+import com.supernova.pipboy.data.achievements.AchievementEvent
 import com.supernova.pipboy.ui.components.PipBoyTabBar
 import com.supernova.pipboy.ui.navigation.back.PredictiveBackHandler
 import com.supernova.pipboy.ui.screens.*
@@ -24,6 +26,11 @@ import com.supernova.pipboy.data.repository.SystemRepository
 fun PipBoyNavHost(viewModel: MainViewModel) {
     val currentTab by viewModel.currentTab.collectAsState()
     val app = LocalContext.current.applicationContext as PipBoyApplication
+    
+    // Track tab visits for Explorer achievement
+    LaunchedEffect(currentTab) {
+        app.achievementManager.trackEvent(AchievementEvent.TabVisited)
+    }
 
     // Wrap content with Predictive Back Handler
     PredictiveBackHandler(
