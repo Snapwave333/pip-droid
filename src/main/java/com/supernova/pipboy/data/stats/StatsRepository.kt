@@ -9,6 +9,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
+import com.supernova.pipboy.PipBoyApplication
+import com.supernova.pipboy.data.achievements.AchievementEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -89,13 +91,48 @@ class StatsRepository(private val context: Context) {
      */
     suspend fun updateStats() {
         try {
+            val oldProfile = getSpecialProfile()
             val metrics = collectUsageMetrics()
-            val profile = calculateStatsFromMetrics(metrics)
-            saveSpecialProfile(profile)
-            checkAndUnlockPerks(profile)
+            val newProfile = calculateStatsFromMetrics(metrics)
+            saveSpecialProfile(newProfile)
+            checkAndUnlockPerks(newProfile)
+            
+            // Track achievement for stat level ups
+            trackStatLevelUps(oldProfile, newProfile)
+            
             Timber.d("Stats updated successfully")
         } catch (e: Exception) {
             Timber.e(e, "Failed to update stats")
+        }
+    }
+    
+    /**
+     * Track achievements for stat level increases
+     */
+    private fun trackStatLevelUps(oldProfile: SpecialProfile, newProfile: SpecialProfile) {
+        try {
+            val app = context.applicationContext as? PipBoyApplication ?: return
+            
+            // Check each stat for level ups
+            listOf(
+                "strength" to (oldProfile.strength.level to newProfile.strength.level),
+                "perception" to (oldProfile.perception.level to newProfile.perception.level),
+                "endurance" to (oldProfile.endurance.level to newProfile.endurance.level),
+                "charisma" to (oldProfile.charisma.level to newProfile.charisma.level),
+                "intelligence" to (oldProfile.intelligence.level to newProfile.intelligence.level),
+                "agility" to (oldProfile.agility.level to newProfile.agility.level),
+                "luck" to (oldProfile.luck.level to newProfile.luck.level)
+            ).forEach { (statName, levels) ->
+                val (oldLevel, newLevel) = levels
+                if (newLevel > oldLevel) {
+                    // Track the new level reached
+                    app.achievementManager.trackEvent(
+                        AchievementEvent.StatLevelReached(statName, newLevel)
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to track stat level achievements")
         }
     }
 
