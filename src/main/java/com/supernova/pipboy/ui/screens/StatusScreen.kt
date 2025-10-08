@@ -21,6 +21,7 @@ import com.supernova.pipboy.data.stats.SpecialProfile
 import com.supernova.pipboy.data.stats.StatValue
 import com.supernova.pipboy.data.stats.StatsRepository
 import com.supernova.pipboy.ui.components.PipBoyIDBadge
+import com.supernova.pipboy.ui.components.VaultBoyIcons
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -138,6 +139,16 @@ fun StatusScreen(
 
 @Composable
 fun StatCard(stat: StatValue, color: Color) {
+    val vaultBoyPose = when (stat.stat) {
+        com.supernova.pipboy.data.stats.SpecialStat.STRENGTH -> VaultBoyIcons.VaultBoyPose.THUMBS_UP
+        com.supernova.pipboy.data.stats.SpecialStat.PERCEPTION -> VaultBoyIcons.VaultBoyPose.SALUTE
+        com.supernova.pipboy.data.stats.SpecialStat.ENDURANCE -> VaultBoyIcons.VaultBoyPose.HAPPY
+        com.supernova.pipboy.data.stats.SpecialStat.CHARISMA -> VaultBoyIcons.VaultBoyPose.PEACE_SIGN
+        com.supernova.pipboy.data.stats.SpecialStat.INTELLIGENCE -> VaultBoyIcons.VaultBoyPose.THINKING
+        com.supernova.pipboy.data.stats.SpecialStat.AGILITY -> VaultBoyIcons.VaultBoyPose.EXCITED
+        com.supernova.pipboy.data.stats.SpecialStat.LUCK -> VaultBoyIcons.VaultBoyPose.COOL
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,19 +156,29 @@ fun StatCard(stat: StatValue, color: Color) {
             .background(color.copy(alpha = 0.05f))
             .padding(12.dp)
     ) {
-        // Stat name and level
+        // Stat name, level, and Vault Boy icon
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = stat.stat.name,
-                style = PipBoyTypography.displayMedium,
-                color = color,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                com.supernova.pipboy.ui.components.VaultBoyIcon(
+                    pose = vaultBoyPose,
+                    size = 32.dp,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+
+                Text(
+                    text = stat.stat.name,
+                    style = PipBoyTypography.displayMedium,
+                    color = color,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Text(
                 text = "${stat.level}",
                 style = PipBoyTypography.displayLarge,

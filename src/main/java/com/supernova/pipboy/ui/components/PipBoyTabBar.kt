@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.supernova.pipboy.ui.components.VaultBoyIcons
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.PipBoyTab
 
@@ -90,4 +91,19 @@ private val PipBoyTab.displayName: String
         PipBoyTab.RADIO -> "RADIO"
         PipBoyTab.ACHIEVEMENTS -> "ACHV"
         PipBoyTab.SETTINGS -> "SETT"
+    }
+
+/**
+ * Get Vault Boy pose for each tab
+ */
+private val PipBoyTab.vaultBoyPose: VaultBoyIcons.VaultBoyPose
+    get() = when (this) {
+        PipBoyTab.HOME -> VaultBoyIcons.VaultBoyPose.EXCITED // Excited for C.A.M.P.
+        PipBoyTab.STATUS -> VaultBoyIcons.VaultBoyPose.THINKING // Thinking for stats
+        PipBoyTab.INVENTORY -> VaultBoyIcons.VaultBoyPose.HAPPY // Happy for inventory
+        PipBoyTab.DATA -> VaultBoyIcons.VaultBoyPose.COOL // Cool for data
+        PipBoyTab.MAP -> VaultBoyIcons.VaultBoyPose.SALUTE // Salute for map
+        PipBoyTab.RADIO -> VaultBoyIcons.VaultBoyPose.PEACE_SIGN // Peace for radio
+        PipBoyTab.ACHIEVEMENTS -> VaultBoyIcons.VaultBoyPose.THUMBS_UP // Thumbs up for achievements
+        PipBoyTab.SETTINGS -> VaultBoyIcons.VaultBoyPose.THINKING // Thinking for settings
     }

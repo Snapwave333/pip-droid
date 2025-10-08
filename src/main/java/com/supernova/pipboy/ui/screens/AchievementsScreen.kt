@@ -24,6 +24,8 @@ import com.supernova.pipboy.data.achievements.Achievement
 import com.supernova.pipboy.data.achievements.AchievementCategory
 import com.supernova.pipboy.data.achievements.AchievementManager
 import com.supernova.pipboy.data.achievements.AchievementTier
+import com.supernova.pipboy.ui.components.VaultBoyAchievementIcon
+import com.supernova.pipboy.ui.components.VaultBoyIcons
 import com.supernova.pipboy.ui.components.clickableWithSound
 import com.supernova.pipboy.audio.SoundEffect
 
@@ -239,7 +241,18 @@ private fun AchievementCard(
 ) {
     val tierColor = Color(achievement.tier.color)
     val alpha = if (achievement.isUnlocked) 1f else 0.4f
-    
+
+    // Get Vault Boy pose based on achievement category
+    val vaultBoyPose = when (achievement.category) {
+        AchievementCategory.GENERAL -> VaultBoyIcons.VaultBoyPose.THUMBS_UP
+        AchievementCategory.TERMINAL -> VaultBoyIcons.VaultBoyPose.THINKING
+        AchievementCategory.QUESTS -> VaultBoyIcons.VaultBoyPose.EXCITED
+        AchievementCategory.STATS -> VaultBoyIcons.VaultBoyPose.COOL
+        AchievementCategory.RADIO -> VaultBoyIcons.VaultBoyPose.PEACE_SIGN
+        AchievementCategory.EXPLORATION -> VaultBoyIcons.VaultBoyPose.SALUTE
+        AchievementCategory.SPECIAL -> VaultBoyIcons.VaultBoyPose.HAPPY
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -252,134 +265,57 @@ private fun AchievementCard(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Icon/Status
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .background(
-                    if (achievement.isUnlocked) tierColor.copy(alpha = 0.2f) else Color.Transparent,
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .border(
-                    width = 1.dp,
-                    color = tierColor.copy(alpha = if (achievement.isUnlocked) 0.8f else 0.3f),
-                    shape = RoundedCornerShape(4.dp)
-                ),
-            contentAlignment = Alignment.Center
+        // Vault Boy Icon
+        VaultBoyAchievementIcon(
+            pose = vaultBoyPose,
+            size = 48.dp,
+            isUnlocked = achievement.isUnlocked,
+            modifier = Modifier.padding(end = 12.dp)
+        )
+
+        // Achievement details
+        Column(
+            modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = if (achievement.isUnlocked) "✓" else "🔒",
-                fontSize = 24.sp,
-                color = tierColor
+                text = achievement.title,
+                style = PipBoyTypography.displayMedium,
+                color = if (achievement.isUnlocked) tierColor else tierColor.copy(alpha = 0.6f),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
             )
-        }
-        
-        Spacer(modifier = Modifier.width(12.dp))
-        
-        // Info
-        Column(modifier = Modifier.weight(1f)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = achievement.title,
-                    color = if (achievement.isUnlocked) tierColor else Color.Gray,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
-                )
-                
-                // Tier badge
-                Text(
-                    text = achievement.tier.name.take(3),
-                    color = tierColor.copy(alpha = 0.6f),
-                    fontSize = 8.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .background(
-                            tierColor.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(2.dp)
-                        )
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            
+
             Text(
-                text = if (achievement.isUnlocked || achievement.progress > 0) {
-                    achievement.description
-                } else {
-                    "???"
-                },
-                color = if (achievement.isUnlocked) Color(0xFF00FF00).copy(alpha = 0.8f) else Color.Gray,
+                text = achievement.description,
+                style = PipBoyTypography.bodyMedium,
+                color = if (achievement.isUnlocked) tierColor.copy(alpha = 0.8f) else tierColor.copy(alpha = 0.4f),
                 fontSize = 12.sp,
-                lineHeight = 16.sp
+                modifier = Modifier.padding(top = 2.dp)
             )
-            
-            Spacer(modifier = Modifier.height(6.dp))
-            
-            // Progress bar (if not unlocked and has progress)
-            if (!achievement.isUnlocked && achievement.maxProgress > 1) {
-                Column {
-                    LinearProgressIndicator(
-                        progress = achievement.progress.toFloat() / achievement.maxProgress.toFloat(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(4.dp),
-                        color = tierColor,
-                        trackColor = tierColor.copy(alpha = 0.2f)
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "${achievement.progress} / ${achievement.maxProgress}",
-                        color = tierColor.copy(alpha = 0.6f),
-                        fontSize = 10.sp
-                    )
-                }
-            }
-            
-            // XP reward
+
+            // XP and category
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "+${achievement.xpReward} XP",
-                    color = if (achievement.isUnlocked) Color(0xFFFFD700) else Color.Gray,
-                    fontSize = 11.sp,
+                    text = "${achievement.xpReward} XP",
+                    style = PipBoyTypography.bodyMedium,
+                    color = if (achievement.isUnlocked) Color.Yellow else Color.Yellow.copy(alpha = 0.5f),
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
                 )
-                
-                if (achievement.isUnlocked && achievement.unlockedAt != null) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "• ${getTimeAgo(achievement.unlockedAt)}",
-                        color = Color.Gray.copy(alpha = 0.6f),
-                        fontSize = 9.sp
-                    )
-                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = achievement.category.name,
+                    style = PipBoyTypography.bodyMedium,
+                    color = if (achievement.isUnlocked) tierColor.copy(alpha = 0.7f) else tierColor.copy(alpha = 0.3f),
+                    fontSize = 10.sp
+                )
             }
         }
-    }
-}
-
-private fun getTimeAgo(timestamp: Long): String {
-    val now = System.currentTimeMillis()
-    val diff = now - timestamp
-    
-    val seconds = diff / 1000
-    val minutes = seconds / 60
-    val hours = minutes / 60
-    val days = hours / 24
-    
-    return when {
-        days > 0 -> "${days}d ago"
-        hours > 0 -> "${hours}h ago"
-        minutes > 0 -> "${minutes}m ago"
-        else -> "Just now"
     }
 }
 
