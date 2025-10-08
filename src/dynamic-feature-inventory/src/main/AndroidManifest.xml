@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.supernova.pipboy.dynamic.inventory">
+
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_inventory_feature">
+        <dist:delivery>
+            <dist:install-time>
+                <dist:conditions>
+                    <dist:user-countries
+                        dist:exclude="false">
+                        <dist:country dist:code="US" />
+                        <dist:country dist:code="CA" />
+                        <dist:country dist:code="GB" />
+                        <dist:country dist:code="DE" />
+                        <dist:country dist:code="FR" />
+                        <dist:country dist:code="JP" />
+                        <dist:country dist:code="KR" />
+                        <dist:country dist:code="AU" />
+                    </dist:user-countries>
+                    <dist:device-feature
+                        dist:name="android.hardware.camera">
+                        <dist:conditions>
+                            <dist:min-sdk-version
+                                dist:value="26" />
+                        </dist:conditions>
+                    </dist:device-feature>
+                </dist:conditions>
+            </dist:install-time>
+            <dist:on-demand>
+                <dist:conditions>
+                    <dist:min-sdk-version
+                        dist:value="26" />
+                </dist:conditions>
+            </dist:on-demand>
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <application>
+        <activity
+            android:name=".InventoryActivity"
+            android:label="@string/title_inventory_feature"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="pipboy" />
+                <data android:host="inventory" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.supernova.pipboy.dynamic.inventory.InventoryInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
+
+</manifest>

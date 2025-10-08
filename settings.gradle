@@ -1,0 +1,35 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+rootProject.name = "PipBoy"
+
+// Root project is the application module (no subproject for app)
+
+// Temporarily disabled due to domain module dependency
+// include ':feature-status'
+// project(":feature-status").projectDir = file("src/feature-status")
+
+// Dynamic feature temporarily disabled to unblock base build
+// include ':dynamic-feature-inventory'
+// project(":dynamic-feature-inventory").projectDir = file("src/dynamic-feature-inventory")
+
+// Temporarily disabled due to compilation issues
+// include ':domain'
+// project(":domain").projectDir = file("src/domain")
+
+// Wear module temporarily disabled due to unresolved dependencies
+// include ':wear'
+// project(":wear").projectDir = file("src/wear")

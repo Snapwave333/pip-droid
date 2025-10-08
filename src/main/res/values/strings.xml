@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pip-Boy 3000</string>
+    <string name="status_tab">STATUS</string>
+    <string name="inventory_tab">INVENTORY</string>
+    <string name="data_tab">DATA</string>
+    <string name="map_tab">MAP</string>
+    <string name="radio_tab">RADIO</string>
+</resources>

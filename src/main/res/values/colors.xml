@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 2 Color Attributes for backward compatibility -->
+    <attr name="colorPrimaryVariant" type="color" />
+    <attr name="colorSecondary" type="color" />
+    <attr name="colorSecondaryVariant" type="color" />
+    <attr name="colorOnPrimary" type="color" />
+    <attr name="colorOnSecondary" type="color" />
+    <attr name="colorSurface" type="color" />
+    <attr name="colorOnSurface" type="color" />
+
+    <!-- Color definitions -->
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryVariant">#000000</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#000000</color>
+    <color name="colorSecondaryVariant">#000000</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="colorSurface">#000000</color>
+    <color name="colorOnSurface">#FFFFFF</color>
+</resources>

@@ -1,0 +1,95 @@
+package com.supernova.pipboy.data.preferences
+
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import com.supernova.pipboy.data.model.PipBoyColor
+
+/**
+ * Manages user preferences for the Pip-Boy launcher
+ */
+class PipBoyPreferences(context: Context) {
+
+    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    var primaryColor: PipBoyColor
+        get() {
+            val red = prefs.getInt(KEY_RED, PipBoyColor.DEFAULT.red)
+            val green = prefs.getInt(KEY_GREEN, PipBoyColor.DEFAULT.green)
+            val blue = prefs.getInt(KEY_BLUE, PipBoyColor.DEFAULT.blue)
+            return PipBoyColor(red, green, blue)
+        }
+        set(value) {
+            prefs.edit {
+                putInt(KEY_RED, value.red)
+                putInt(KEY_GREEN, value.green)
+                putInt(KEY_BLUE, value.blue)
+            }
+        }
+
+    var crtScanlinesEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CRT_SCANLINES, true)
+        set(value) = prefs.edit { putBoolean(KEY_CRT_SCANLINES, value) }
+
+    var crtFlickerEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CRT_FLICKER, true)
+        set(value) = prefs.edit { putBoolean(KEY_CRT_FLICKER, value) }
+
+    var crtDistortionEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CRT_DISTORTION, true)
+        set(value) = prefs.edit { putBoolean(KEY_CRT_DISTORTION, value) }
+
+    var soundEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SOUND_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_SOUND_ENABLED, value) }
+
+    var autoBrightness: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_BRIGHTNESS, false)
+        set(value) = prefs.edit { putBoolean(KEY_AUTO_BRIGHTNESS, value) }
+
+    var brightness: Float
+        get() = prefs.getFloat(KEY_BRIGHTNESS, 1.0f)
+        set(value) = prefs.edit { putFloat(KEY_BRIGHTNESS, value.coerceIn(0.1f, 2.0f)) }
+
+    var favoriteApps: Set<String>
+        get() = prefs.getStringSet(KEY_FAVORITE_APPS, emptySet()) ?: emptySet()
+        set(value) = prefs.edit { putStringSet(KEY_FAVORITE_APPS, value) }
+
+    var notes: String
+        get() = prefs.getString(KEY_NOTES, "") ?: ""
+        set(value) = prefs.edit { putString(KEY_NOTES, value) }
+
+    /**
+     * Reset all preferences to default values
+     */
+    fun resetToDefaults() {
+        primaryColor = PipBoyColor.DEFAULT
+        crtScanlinesEnabled = true
+        crtFlickerEnabled = true
+        crtDistortionEnabled = true
+        soundEnabled = true
+        autoBrightness = false
+        brightness = 1.0f
+        favoriteApps = emptySet()
+        notes = ""
+    }
+
+    companion object {
+        private const val PREFS_NAME = "pipboy_preferences"
+
+        private const val KEY_RED = "primary_color_red"
+        private const val KEY_GREEN = "primary_color_green"
+        private const val KEY_BLUE = "primary_color_blue"
+
+        private const val KEY_CRT_SCANLINES = "crt_scanlines_enabled"
+        private const val KEY_CRT_FLICKER = "crt_flicker_enabled"
+        private const val KEY_CRT_DISTORTION = "crt_distortion_enabled"
+
+        private const val KEY_SOUND_ENABLED = "sound_enabled"
+        private const val KEY_AUTO_BRIGHTNESS = "auto_brightness"
+        private const val KEY_BRIGHTNESS = "brightness"
+
+        private const val KEY_FAVORITE_APPS = "favorite_apps"
+        private const val KEY_NOTES = "quick_notes"
+    }
+}
