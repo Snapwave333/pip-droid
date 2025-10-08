@@ -25,6 +25,7 @@ class PipBoyApplication : Application() {
     lateinit var systemRepository: com.supernova.pipboy.data.repository.SystemRepository
     lateinit var appRepository: com.supernova.pipboy.data.repository.AppRepository
     lateinit var preferences: com.supernova.pipboy.data.preferences.PipBoyPreferences
+    lateinit var soundManager: com.supernova.pipboy.audio.SoundManager
     private lateinit var securityUtils: SecurityUtils
     private lateinit var timberTree: Timber.Tree
     private lateinit var crashlyticsManager: CrashlyticsManagerStub
@@ -81,6 +82,7 @@ class PipBoyApplication : Application() {
             systemRepository = com.supernova.pipboy.data.repository.SystemRepository(this)
             preferences = com.supernova.pipboy.data.preferences.PipBoyPreferences(this)
             appRepository = com.supernova.pipboy.data.repository.AppRepository(this, preferences)
+            soundManager = com.supernova.pipboy.audio.SoundManager(this)
             securityUtils = SecurityUtils(this)
             timberTree = if (com.supernova.pipboy.BuildConfig.DEBUG) {
                 Timber.DebugTree()

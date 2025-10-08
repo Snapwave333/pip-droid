@@ -12,6 +12,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.supernova.pipboy.data.model.PipBoyColor
+import com.supernova.pipboy.ui.components.rememberSoundManager
+import com.supernova.pipboy.audio.SoundEffect
 import kotlinx.coroutines.delay
 
 /**
@@ -49,6 +51,8 @@ fun StartupScreen(
 
     var visibleLines by remember { mutableStateOf(0) }
     var isComplete by remember { mutableStateOf(false) }
+    
+    val soundManager = rememberSoundManager()
 
     // Animated cursor blink
     val infiniteTransition = rememberInfiniteTransition(label = "cursor_blink")
@@ -64,12 +68,20 @@ fun StartupScreen(
 
     // Terminal boot sequence
     LaunchedEffect(Unit) {
+        // Play boot sound at start
+        soundManager.play(SoundEffect.TERMINAL_BOOT)
+        
         for (i in bootMessages.indices) {
             visibleLines = i + 1
+            // Play typing sound for each line (except empty lines)
+            if (bootMessages[i].isNotEmpty()) {
+                soundManager.play(SoundEffect.TERMINAL_TYPE, volumeMultiplier = 0.6f)
+            }
             delay(if (bootMessages[i].isEmpty()) 100 else 150) // Faster for empty lines
         }
         delay(1000) // Pause at end
         isComplete = true
+        soundManager.play(SoundEffect.SUCCESS_BEEP)
         delay(500)
         onStartupComplete()
     }
