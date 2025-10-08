@@ -31,6 +31,13 @@
       "env": {
         "SERENA_PROJECT_ROOT": "${workspaceFolder}"
       }
+    },
+    "freesound": {
+      "command": "python",
+      "args": ["${workspaceFolder}/mcp_server_freesound.py"],
+      "env": {
+        "FREESOUND_API_KEY": "${env:FREESOUND_API_KEY}"
+      }
     }
   }
 }

@@ -340,7 +340,85 @@ Analyze the data flow from Repository to UI
 
 ---
 
-### 6. Puppeteer Browser Automation
+### 6. Freesound - 500,000+ Professional Sound Effects 🔊
+
+**Purpose**: Access massive library of professional, FREE sound effects for your app.
+
+**🎯 COMPLETELY FREE! NO API COST!**
+
+**Configuration**: `.cursor/mcp.json`
+
+```json
+{
+  "freesound": {
+    "command": "python",
+    "args": ["${workspaceFolder}/mcp_server_freesound.py"],
+    "env": {
+      "FREESOUND_API_KEY": "${env:FREESOUND_API_KEY}"
+    }
+  }
+}
+```
+
+**Features**:
+- 🆓 **Completely FREE** - No credit card, no usage limits
+- 📚 **500,000+ sounds** - Massive collaborative database
+- ⚖️ **Legal for commercial** - CC0 and CC-BY licenses
+- 🔍 **Advanced search** - By tags, duration, license, rating
+- 📥 **Direct download** - Instant access to high-quality files
+- 🎵 **Professional quality** - Community-uploaded recordings
+- 🤖 **Automated batch download** - Get all sounds at once
+
+**Available Tools**:
+- `search_sounds` - Search by description with filters
+- `download_sound` - Download by sound ID
+- `get_sound_details` - Get complete metadata
+- `download_pip_boy_sounds` - Auto-download curated set
+- `get_api_status` - Check API connection
+
+**Perfect For Pip-Droid**:
+- Replace all 27 placeholder sounds
+- Find retro computer/terminal sounds
+- Get mechanical button clicks
+- Download radio static and tuning sounds
+- Quest completion chimes
+- Level-up sound effects
+- All with CC0 license (no attribution needed!)
+
+**Usage in Cursor**:
+```
+Search Freesound for "mechanical button click" CC0 license
+Download Freesound sound 341695 to src/main/res/raw/button_click.wav
+Download curated Pip-Boy sound effects
+Check Freesound API status
+```
+
+**Setup**:
+1. Get FREE API key: https://freesound.org/apiv2/apply/
+2. Instant approval (no waiting!)
+3. Set environment variable: `FREESOUND_API_KEY=your-key`
+4. Restart Cursor
+5. **Start downloading!**
+
+**Cost Analysis**:
+- **API Key**: FREE forever
+- **Downloads**: Unlimited
+- **Storage**: FREE (CC0/CC-BY)
+- **Commercial Use**: FREE (CC0 license)
+- **Total Cost**: $0 🎉
+
+**vs ElevenLabs Sound Generation**:
+- ElevenLabs: $99/month for sound generation
+- Freesound: $0/month for 500,000+ sounds
+- **Winner**: Freesound for budget projects!
+
+**Repository**: [Custom MCP Server](../mcp_server_freesound.py)  
+**Website**: https://freesound.org  
+**Documentation**: See `docs/FREESOUND_MCP_GUIDE.md`
+
+---
+
+### 7. Puppeteer Browser Automation
 
 **Purpose**: Provides browser automation capabilities using Puppeteer for web scraping, testing, and interaction.
 
