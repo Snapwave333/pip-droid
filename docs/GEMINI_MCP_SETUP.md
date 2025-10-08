@@ -1,8 +1,16 @@
 # Gemini MCP Server Setup & Debugging Guide
 
-## ✅ Server Status: FIXED & OPERATIONAL
+## ⚠️ Server Status: CONFIGURED BUT LIMITED
 
-The Gemini Image Generator MCP server has been debugged and is now fully functional!
+**IMPORTANT DISCOVERY**: The Gemini API does NOT support text-to-image generation.
+
+The Gemini API (google-generativeai) only supports:
+- ✅ Text generation and analysis
+- ✅ Image analysis (vision/understanding)
+- ✅ Chat and conversation
+- ❌ **Image generation (NOT SUPPORTED)**
+
+For the Pip-Droid project, **continue using the existing placeholder images** for the beta release. They are sufficient for now and can be upgraded later using DALL-E, Stable Diffusion, or manual creation.
 
 ---
 
