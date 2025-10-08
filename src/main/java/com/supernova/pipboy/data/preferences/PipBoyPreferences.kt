@@ -59,6 +59,56 @@ class PipBoyPreferences(context: Context) {
         get() = prefs.getString(KEY_NOTES, "") ?: ""
         set(value) = prefs.edit { putString(KEY_NOTES, value) }
 
+    // ========== Achievement System ==========
+    
+    var masterVolume: Float
+        get() = prefs.getFloat(KEY_MASTER_VOLUME, 1.0f)
+        set(value) = prefs.edit { putFloat(KEY_MASTER_VOLUME, value.coerceIn(0f, 1f)) }
+
+    fun getAchievementProgress(): Map<String, Int> {
+        val json = prefs.getString(KEY_ACHIEVEMENT_PROGRESS, "{}") ?: "{}"
+        return try {
+            com.google.gson.Gson().fromJson(json, Map::class.java)
+                .mapKeys { it.key.toString() }
+                .mapValues { (it.value as? Double)?.toInt() ?: 0 }
+        } catch (e: Exception) {
+            emptyMap()
+        }
+    }
+
+    fun setAchievementProgress(progress: Map<String, Int>) {
+        val json = com.google.gson.Gson().toJson(progress)
+        prefs.edit { putString(KEY_ACHIEVEMENT_PROGRESS, json) }
+    }
+
+    var lastOpenDay: Long
+        get() = prefs.getLong(KEY_LAST_OPEN_DAY, 0)
+        set(value) = prefs.edit { putLong(KEY_LAST_OPEN_DAY, value) }
+
+    var consecutiveDays: Int
+        get() = prefs.getInt(KEY_CONSECUTIVE_DAYS, 0)
+        set(value) = prefs.edit { putInt(KEY_CONSECUTIVE_DAYS, value) }
+
+    var totalDaysUsed: Int
+        get() = prefs.getInt(KEY_TOTAL_DAYS_USED, 0)
+        set(value) = prefs.edit { putInt(KEY_TOTAL_DAYS_USED, value) }
+
+    var lastQuestDay: Long
+        get() = prefs.getLong(KEY_LAST_QUEST_DAY, 0)
+        set(value) = prefs.edit { putLong(KEY_LAST_QUEST_DAY, value) }
+
+    var questStreak: Int
+        get() = prefs.getInt(KEY_QUEST_STREAK, 0)
+        set(value) = prefs.edit { putInt(KEY_QUEST_STREAK, value) }
+
+    var listenedStations: Set<String>
+        get() = prefs.getStringSet(KEY_LISTENED_STATIONS, emptySet()) ?: emptySet()
+        set(value) = prefs.edit { putStringSet(KEY_LISTENED_STATIONS, value) }
+
+    var radioMinutes: Int
+        get() = prefs.getInt(KEY_RADIO_MINUTES, 0)
+        set(value) = prefs.edit { putInt(KEY_RADIO_MINUTES, value) }
+
     /**
      * Reset all preferences to default values
      */
@@ -72,6 +122,7 @@ class PipBoyPreferences(context: Context) {
         brightness = 1.0f
         favoriteApps = emptySet()
         notes = ""
+        masterVolume = 1.0f
     }
 
     companion object {
@@ -91,5 +142,16 @@ class PipBoyPreferences(context: Context) {
 
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_NOTES = "quick_notes"
+        
+        // Achievement system keys
+        private const val KEY_MASTER_VOLUME = "master_volume"
+        private const val KEY_ACHIEVEMENT_PROGRESS = "achievement_progress"
+        private const val KEY_LAST_OPEN_DAY = "last_open_day"
+        private const val KEY_CONSECUTIVE_DAYS = "consecutive_days"
+        private const val KEY_TOTAL_DAYS_USED = "total_days_used"
+        private const val KEY_LAST_QUEST_DAY = "last_quest_day"
+        private const val KEY_QUEST_STREAK = "quest_streak"
+        private const val KEY_LISTENED_STATIONS = "listened_stations"
+        private const val KEY_RADIO_MINUTES = "radio_minutes"
     }
 }
