@@ -15,6 +15,15 @@
     "desktop-commander": {
       "command": "npx",
       "args": ["-y", "desktop-commander"]
+    },
+    "elevenlabs": {
+      "command": "uvx",
+      "args": ["elevenlabs-mcp"],
+      "env": {
+        "ELEVENLABS_API_KEY": "${env:ELEVENLABS_API_KEY}",
+        "ELEVENLABS_MCP_BASE_PATH": "${workspaceFolder}/docs/audio",
+        "ELEVENLABS_MCP_OUTPUT_MODE": "files"
+      }
     }
   }
 }

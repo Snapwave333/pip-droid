@@ -183,7 +183,83 @@ Stage all quest-related changes and commit
 
 ---
 
-### 4. Puppeteer Browser Automation
+### 4. ElevenLabs - Professional Voice AI 🎙️
+
+**Purpose**: World-class text-to-speech, voice cloning, and audio processing powered by ElevenLabs AI.
+
+**🎤 API KEY REQUIRED** (Free tier: 10k credits/month)
+
+**Configuration**: `.cursor/mcp.json`
+
+```json
+{
+  "elevenlabs": {
+    "command": "uvx",
+    "args": ["elevenlabs-mcp"],
+    "env": {
+      "ELEVENLABS_API_KEY": "${env:ELEVENLABS_API_KEY}",
+      "ELEVENLABS_MCP_BASE_PATH": "${workspaceFolder}/docs/audio",
+      "ELEVENLABS_MCP_OUTPUT_MODE": "files"
+    }
+  }
+}
+```
+
+**Features**:
+- 🎤 **Text-to-Speech** - Natural, human-like AI voices (29+ languages)
+- 🎭 **Voice Design** - Create custom character voices from descriptions
+- 👤 **Voice Cloning** - Clone voices from audio samples
+- 📝 **Speech-to-Text** - Transcribe with speaker identification
+- 🎵 **Sound Effects** - Generate custom sound effects and soundscapes
+- 🔧 **Audio Processing** - Isolate vocals, remove noise
+- 🌍 **Multi-Language** - Support for 29+ languages
+
+**Available Tools**:
+- `generate_speech` - Convert text to natural speech
+- `design_voice` - Create voices from descriptions
+- `clone_voice` - Clone voices from audio
+- `transcribe_audio` - Speech-to-text with speakers
+- `generate_sound_effect` - Create custom sounds
+- `isolate_vocals` - Remove background noise
+
+**Perfect For Pip-Droid**:
+- Quest narration and completion audio
+- System notifications and alerts
+- Radio station DJ voices
+- Terminal command feedback sounds
+- Tutorial voiceovers
+- Character dialogue
+- Ambient soundscapes
+
+**Usage in Cursor**:
+```
+Generate speech: "Welcome to Pip-Boy 3000"
+Design a voice: "Gruff wasteland survivor with deep voice"
+Create sound effect: "Geiger counter clicking"
+Transcribe this audio file with speaker labels
+```
+
+**Setup**:
+1. Get free API key from https://elevenlabs.io/ (10k credits/month)
+2. Set environment variable: `ELEVENLABS_API_KEY=your-key`
+3. Install UV: `pip install uv` or `curl -LsSf https://astral.sh/uv/install.sh | sh`
+4. Restart Cursor
+
+**Pricing**:
+- **Free**: 10,000 credits/month (~10k characters)
+- **Starter**: 30k credits/month ($5)
+- **Creator**: 100k credits/month ($22)
+- **Pro**: 500k credits/month ($99)
+
+**Output Location**: Audio files saved to `docs/audio/`
+
+**Repository**: [elevenlabs/elevenlabs-mcp](https://github.com/elevenlabs/elevenlabs-mcp)  
+**Website**: https://elevenlabs.io/  
+**Documentation**: See `docs/ELEVENLABS_MCP_GUIDE.md`
+
+---
+
+### 5. Puppeteer Browser Automation
 
 **Purpose**: Provides browser automation capabilities using Puppeteer for web scraping, testing, and interaction.
 
