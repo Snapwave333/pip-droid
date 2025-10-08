@@ -7,6 +7,10 @@
         "GEMINI_API_KEY": "${env:GEMINI_API_KEY}",
         "OUTPUT_IMAGE_PATH": "${workspaceFolder}/docs/images"
       }
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
     }
   }
 }
