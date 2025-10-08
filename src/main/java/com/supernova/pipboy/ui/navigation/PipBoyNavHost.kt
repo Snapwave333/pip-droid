@@ -61,6 +61,7 @@ fun PipBoyNavHost(viewModel: MainViewModel) {
                     PipBoyTab.ACHIEVEMENTS -> AchievementsScreen(
                         achievementManager = app.achievementManager
                     )
+                    PipBoyTab.SETTINGS -> SettingsScreen(viewModel)
                 }
             }
 
