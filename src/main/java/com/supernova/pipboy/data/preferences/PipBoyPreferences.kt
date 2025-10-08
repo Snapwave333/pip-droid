@@ -113,6 +113,23 @@ class PipBoyPreferences(context: Context) {
         get() = prefs.getInt(KEY_TAB_VISITS, 0)
         set(value) = prefs.edit { putInt(KEY_TAB_VISITS, value) }
 
+    // ID Badge preferences
+    var idBadgeName: String
+        get() = prefs.getString(KEY_ID_BADGE_NAME, "Vault Dweller") ?: "Vault Dweller"
+        set(value) = prefs.edit { putString(KEY_ID_BADGE_NAME, value) }
+
+    var idBadgeVaultNumber: String
+        get() = prefs.getString(KEY_ID_BADGE_VAULT_NUMBER, "101") ?: "101"
+        set(value) = prefs.edit { putString(KEY_ID_BADGE_VAULT_NUMBER, value) }
+
+    var idBadgeRank: String
+        get() = prefs.getString(KEY_ID_BADGE_RANK, "Citizen") ?: "Citizen"
+        set(value) = prefs.edit { putString(KEY_ID_BADGE_RANK, value) }
+
+    var idBadgeVisible: Boolean
+        get() = prefs.getBoolean(KEY_ID_BADGE_VISIBLE, false)
+        set(value) = prefs.edit { putBoolean(KEY_ID_BADGE_VISIBLE, value) }
+
     /**
      * Reset all preferences to default values
      */
@@ -158,5 +175,9 @@ class PipBoyPreferences(context: Context) {
         private const val KEY_LISTENED_STATIONS = "listened_stations"
         private const val KEY_RADIO_MINUTES = "radio_minutes"
         private const val KEY_TAB_VISITS = "tab_visits"
+        private const val KEY_ID_BADGE_NAME = "id_badge_name"
+        private const val KEY_ID_BADGE_VAULT_NUMBER = "id_badge_vault_number"
+        private const val KEY_ID_BADGE_RANK = "id_badge_rank"
+        private const val KEY_ID_BADGE_VISIBLE = "id_badge_visible"
     }
 }

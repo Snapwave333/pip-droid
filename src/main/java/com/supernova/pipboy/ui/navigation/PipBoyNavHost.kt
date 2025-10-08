@@ -6,18 +6,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.runtime.*
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import com.supernova.pipboy.PipBoyApplication
 import com.supernova.pipboy.data.achievements.AchievementEvent
 import com.supernova.pipboy.ui.components.PipBoyTabBar
+import com.supernova.pipboy.ui.components.VaultRoom
 import com.supernova.pipboy.ui.navigation.back.PredictiveBackHandler
 import com.supernova.pipboy.ui.screens.*
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.MainViewModel
 import com.supernova.pipboy.ui.viewmodel.PipBoyTab
 import com.supernova.pipboy.data.repository.SystemRepository
+import kotlinx.coroutines.delay
 
 /**
  * Main navigation host for the Pip-Boy interface with Predictive Back support
@@ -26,10 +32,36 @@ import com.supernova.pipboy.data.repository.SystemRepository
 fun PipBoyNavHost(viewModel: MainViewModel) {
     val currentTab by viewModel.currentTab.collectAsState()
     val app = LocalContext.current.applicationContext as PipBoyApplication
-    
+    val primaryColor by viewModel.primaryColor.collectAsState()
+
     // Track tab visits for Explorer achievement
     LaunchedEffect(currentTab) {
         app.achievementManager.trackEvent(AchievementEvent.TabVisited)
+    }
+
+    // Hidden Vault Room state
+    var showVaultRoom by remember { mutableStateOf(false) }
+    var tapCount by remember { mutableStateOf(0) }
+
+    // Triple-tap gesture detector for Vault Room access
+    val gestureModifier = Modifier.pointerInput(Unit) {
+        detectTapGestures(
+            onTap = {
+                tapCount++
+                if (tapCount >= 3) {
+                    showVaultRoom = true
+                    tapCount = 0
+                }
+            }
+        )
+    }
+
+    // Reset tap count after delay
+    LaunchedEffect(tapCount) {
+        if (tapCount > 0) {
+            delay(2000) // 2 seconds to complete triple tap
+            tapCount = 0
+        }
     }
 
     // Wrap content with Predictive Back Handler
@@ -37,12 +69,16 @@ fun PipBoyNavHost(viewModel: MainViewModel) {
         currentTab = currentTab,
         onTabChange = { tab -> viewModel.selectTab(tab) }
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(gestureModifier) // Apply triple-tap gesture detection
         ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
             // Header with current tab name and time
-            PipBoyHeader(currentTab, viewModel)
 
             // Main content area
             Box(
@@ -70,40 +106,16 @@ fun PipBoyNavHost(viewModel: MainViewModel) {
                 currentTab = currentTab,
                 onTabSelected = { viewModel.selectTab(it) }
             )
+            }
         }
-    }
-}
 
-/**
- * Header displaying current tab and time
- */
-@Composable
-private fun PipBoyHeader(currentTab: PipBoyTab, viewModel: MainViewModel) {
-    val systemStatus by viewModel.systemStatus.collectAsState()
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        androidx.compose.foundation.layout.Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            androidx.compose.material3.Text(
-                text = currentTab.name,
-                style = PipBoyTypography.displayMedium,
-                color = androidx.compose.ui.graphics.Color.Green
-            )
-
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
-
-            androidx.compose.material3.Text(
-                text = systemStatus.currentTime,
-                style = PipBoyTypography.bodyLarge,
-                color = androidx.compose.ui.graphics.Color.Green
+        // Hidden Vault Room overlay
+        if (showVaultRoom) {
+            VaultRoom(
+                onDismiss = { showVaultRoom = false },
+                primaryColor = Color(primaryColor.red, primaryColor.green, primaryColor.blue)
             )
         }
     }
 }
+

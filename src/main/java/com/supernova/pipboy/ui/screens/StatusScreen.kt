@@ -16,9 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.supernova.pipboy.data.model.PipBoyColor
+import com.supernova.pipboy.data.preferences.PipBoyPreferences
 import com.supernova.pipboy.data.stats.SpecialProfile
 import com.supernova.pipboy.data.stats.StatValue
 import com.supernova.pipboy.data.stats.StatsRepository
+import com.supernova.pipboy.ui.components.PipBoyIDBadge
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -35,9 +37,10 @@ fun StatusScreen(
 ) {
     val primaryColor by viewModel.primaryColor.collectAsState()
     val context = LocalContext.current
+    val preferences = remember { PipBoyPreferences(context) }
     val statsRepository = remember { StatsRepository(context) }
     val scope = rememberCoroutineScope()
-    
+
     var specialProfile by remember { mutableStateOf<SpecialProfile?>(null) }
     
     // Load stats
@@ -92,7 +95,21 @@ fun StatusScreen(
             }
             
             Spacer(modifier = Modifier.height(12.dp))
-            
+
+            // ID Badge (if visible)
+            if (preferences.idBadgeVisible) {
+                PipBoyIDBadge(
+                    name = preferences.idBadgeName,
+                    vaultNumber = preferences.idBadgeVaultNumber,
+                    rank = preferences.idBadgeRank,
+                    primaryColor = color,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 8.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
             // S.P.E.C.I.A.L. stats list
             LazyColumn(
                 modifier = Modifier

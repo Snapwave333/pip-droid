@@ -1,6 +1,7 @@
 package com.supernova.pipboy.data.terminal
 
 import android.content.Context
+import com.supernova.pipboy.data.preferences.PipBoyPreferences
 import com.supernova.pipboy.data.quests.QuestRepository
 import com.supernova.pipboy.data.repository.SystemRepository
 import com.supernova.pipboy.data.stats.StatsRepository
@@ -25,6 +26,7 @@ class TerminalCommands(private val context: Context) {
     private val systemRepo = SystemRepository(context)
     private val statsRepo = StatsRepository(context)
     private val questRepo = QuestRepository(context)
+    private val preferences = PipBoyPreferences(context)
     
     private val easterEggTriggers = mutableMapOf<String, Int>()
 
@@ -67,6 +69,12 @@ class TerminalCommands(private val context: Context) {
                     "tunnelsnakes", "tunnel-snakes" -> tunnelSnakesCommand()
                     "gary" -> garyCommand()
                     "vault" -> vaultCommand(args)
+                    "id" -> idBadgeCommand(args)
+                    "badge" -> idBadgeCommand(args)
+                    "vaultroom" -> vaultRoomCommand()
+                    "override" -> vaultDoorOverrideCommand()
+                    "destruct" -> selfDestructCommand()
+                    "selfdestruct" -> selfDestructCommand()
                     "overseer" -> overseerCommand()
                     "goat" -> goatCommand()
                     "vats" -> vatsCommand()
@@ -641,6 +649,127 @@ class TerminalCommands(private val context: Context) {
             "",
             "Ave, true to Caesar!",
             "(Just kidding, Legion is awful.)",
+            ""
+        ))
+    }
+
+    // ========== EASTER EGG COMMANDS ==========
+
+    private suspend fun idBadgeCommand(args: String): TerminalOutput {
+        val argsList = args.trim().split(" ")
+
+        return when {
+            args.isBlank() -> TerminalOutput(listOf(
+                "=== PIP-BOY ID BADGE ===",
+                "",
+                "Name: ${preferences.idBadgeName}",
+                "Vault: ${preferences.idBadgeVaultNumber}",
+                "Rank: ${preferences.idBadgeRank}",
+                "",
+                "Use 'id set [name] [vault] [rank]' to customize",
+                "Use 'id show' to toggle visibility",
+                "Use 'id hide' to hide badge",
+                ""
+            ))
+
+            args.startsWith("set") -> {
+                if (argsList.size < 4) {
+                    TerminalOutput(listOf(
+                        "Usage: id set [name] [vault] [rank]",
+                        "Example: id set \"Vault Dweller\" 101 Citizen",
+                        ""
+                    ), isError = true)
+                } else {
+                    val name = argsList[1]
+                    val vault = argsList[2]
+                    val rank = argsList[3]
+                    preferences.idBadgeName = name
+                    preferences.idBadgeVaultNumber = vault
+                    preferences.idBadgeRank = rank
+                    TerminalOutput(listOf(
+                        "ID Badge updated!",
+                        "Name: $name",
+                        "Vault: $vault",
+                        "Rank: $rank",
+                        "",
+                        "Achievement unlocked: ID Customizer",
+                        ""
+                    ))
+                }
+            }
+
+            args == "show" -> {
+                preferences.idBadgeVisible = true
+                TerminalOutput(listOf(
+                    "ID Badge is now visible!",
+                    "Check your Pip-Boy interface.",
+                    ""
+                ))
+            }
+
+            args == "hide" -> {
+                preferences.idBadgeVisible = false
+                TerminalOutput(listOf(
+                    "ID Badge is now hidden.",
+                    ""
+                ))
+            }
+
+            else -> TerminalOutput(listOf(
+                "Unknown ID command: $args",
+                "Use 'id', 'id set', 'id show', or 'id hide'",
+                ""
+            ), isError = true)
+        }
+    }
+
+    private suspend fun vaultRoomCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== VAULT-TEC CONTROL ROOM ACCESS ===",
+            "",
+            "ACCESS DENIED",
+            "Security Clearance: INSUFFICIENT",
+            "",
+            "This command requires physical access to the",
+            "Vault-Tec Control Room terminal.",
+            "",
+            "Try a different approach... or tap the screen 3 times.",
+            ""
+        ))
+    }
+
+    private suspend fun vaultDoorOverrideCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== VAULT DOOR OVERRIDE ===",
+            "",
+            "⚠️  SECURITY PROTOCOL VIOLATION ⚠️",
+            "",
+            "Override initiated...",
+            "Door mechanisms engaged...",
+            "Pressure seals released...",
+            "",
+            "Vault door is now OPEN",
+            "",
+            "Achievement unlocked: Vault Door Override",
+            ""
+        ))
+    }
+
+    private suspend fun selfDestructCommand(): TerminalOutput {
+        return TerminalOutput(listOf(
+            "=== SELF-DESTRUCT SEQUENCE ===",
+            "",
+            "⚠️  WARNING ⚠️",
+            "Self-destruct sequence initiated!",
+            "",
+            "This is not a drill.",
+            "All Vault-Tec personnel evacuate immediately.",
+            "",
+            "Detonation in 10 seconds...",
+            "",
+            "Just kidding. Vault-Tec loves you. 💙",
+            "",
+            "Achievement unlocked: Self-Destruct Survivor",
             ""
         ))
     }
