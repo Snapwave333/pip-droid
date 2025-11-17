@@ -306,27 +306,156 @@ Productivity overlay mode:
 
 ---
 
-## 📸 Screenshots
+## 📸 Gallery & Features Showcase
 
 <div align="center">
 
-### Boot Sequence
-![Boot Sequence](docs/images/boot_sequence.png)
+### 🎯 **Experience the Wasteland on Your Device** 🎯
 
-### Main Interface
-![Main Interface](docs/images/main_interface.png)
+</div>
 
-### S.P.E.C.I.A.L. Stats
-![Stats Screen](docs/images/stats_screen.png)
+<table>
+<tr>
+<td width="33%" align="center">
 
-### Quest Log
-![Quest Log](docs/images/quest_log.png)
+### 🏠 **C.A.M.P. Desktop**
+**Your Productivity Hub**
 
-### Terminal Mode
-![Terminal](docs/images/terminal.png)
+📱 Real app icons themed<br>
+🔍 Instant search<br>
+⭐ Favorites dock<br>
+📊 Recent apps tracking<br>
+🎨 Monochrome filters<br>
 
-### Radio Player
-![Radio](docs/images/radio.png)
+*Transform productivity into survival*
+
+</td>
+<td width="33%" align="center">
+
+### 📻 **Radio Station**
+**Fallout.FM Integration**
+
+🎵 8 Fallout radio stations<br>
+📡 Real audio streaming<br>
+🔊 Volume controls<br>
+⏯️ Full playback system<br>
+🔍 Station scanner<br>
+
+*Galaxy News Radio & more*
+
+</td>
+<td width="33%" align="center">
+
+### ⚡ **S.P.E.C.I.A.L. Stats**
+**Real-Time Monitoring**
+
+📊 Live system metrics<br>
+🔋 Battery tracking<br>
+🌡️ Temperature sensors<br>
+💾 Storage status<br>
+📶 Network monitoring<br>
+
+*Your device's Vault-Tec stats*
+
+</td>
+</tr>
+<tr>
+<td width="33%" align="center">
+
+### 🗺️ **Local Map**
+**GPS Navigation**
+
+📍 Real GPS coordinates<br>
+🧭 Compass sensor<br>
+🌐 Geocoder integration<br>
+🗺️ Location tracking<br>
+📱 Map app launcher<br>
+
+*Navigate the wasteland*
+
+</td>
+<td width="33%" align="center">
+
+### 📝 **Quest Log**
+**Gamified Productivity**
+
+✅ Task management<br>
+🏆 XP & leveling system<br>
+📅 Quest tracking<br>
+💯 Completion rewards<br>
+📊 Progress analytics<br>
+
+*Level up your tasks*
+
+</td>
+<td width="33%" align="center">
+
+### 🏆 **Achievements**
+**Unlock Your Potential**
+
+🎯 25+ achievements<br>
+🔓 Hidden unlockables<br>
+📊 Progress tracking<br>
+🔔 Notifications<br>
+🎮 Easter eggs<br>
+
+*Become a wasteland legend*
+
+</td>
+</tr>
+<tr>
+<td width="33%" align="center">
+
+### 💻 **Terminal Mode**
+**Developer Tools**
+
+⌨️ 40+ commands<br>
+🔧 System diagnostics<br>
+🎨 Theme customization<br>
+🐛 Debug utilities<br>
+🎁 Secret commands<br>
+
+*Your V.A.T.S. for Android*
+
+</td>
+<td width="33%" align="center">
+
+### 📊 **Inventory Manager**
+**App Organization**
+
+📦 Categorized apps<br>
+🎯 Smart filtering<br>
+🔍 Real-time search<br>
+⭐ Favorites system<br>
+🖼️ Icon theming<br>
+
+*Manage your arsenal*
+
+</td>
+<td width="33%" align="center">
+
+### 🎨 **Custom Themes**
+**Personalization**
+
+🌈 RGB color picker<br>
+🎨 Preset themes<br>
+📺 CRT effects toggle<br>
+✨ Scanline intensity<br>
+💾 Save presets<br>
+
+*Make it your own Pip-Boy*
+
+</td>
+</tr>
+</table>
+
+<br>
+
+<div align="center">
+
+> **📱 Screenshots coming soon!** Build the app and see it in action on your device!
+>
+> 🚀 **[Download the latest release](#-installation)** • **[Build from source](#-building-from-source)**
 
 </div>
 
