@@ -1,8 +1,11 @@
 package com.supernova.pipboy.ui.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.supernova.pipboy.utils.PermissionManager
+import com.supernova.pipboy.utils.PermissionResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -38,6 +41,11 @@ class MainActivity : ComponentActivity() {
 
         app = application as PipBoyApplication
 
+        // Request runtime permissions if not granted
+        if (!PermissionManager.hasAllPermissions(this)) {
+            PermissionManager.requestMissingPermissions(this)
+        }
+
         setContent {
             val viewModel: MainViewModel = viewModel(
                 factory = object : ViewModelProvider.Factory {
@@ -63,6 +71,31 @@ class MainActivity : ComponentActivity() {
         // When used as launcher, back button should move task to background instead of closing
         // This makes it behave like a home screen
         moveTaskToBack(true)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        val result = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (result) {
+            PermissionResult.ALL_GRANTED -> {
+                Toast.makeText(this, "All permissions granted - Pip-Boy fully operational!", Toast.LENGTH_SHORT).show()
+            }
+            PermissionResult.PARTIALLY_GRANTED -> {
+                Toast.makeText(this, "Some permissions denied - some features may not work", Toast.LENGTH_LONG).show()
+            }
+            PermissionResult.ALL_DENIED -> {
+                Toast.makeText(this, "Permissions denied - Pip-Boy functionality limited", Toast.LENGTH_LONG).show()
+            }
+            PermissionResult.IRRELEVANT -> {
+                // Do nothing
+            }
+        }
     }
 }
 

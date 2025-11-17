@@ -46,6 +46,25 @@ class MainViewModel(
     val allApps = appRepository.allApps
     val favoriteApps = appRepository.favoriteApps
     val categorizedApps = appRepository.categorizedApps
+    val recentApps = appRepository.recentApps
+
+    // Search query
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    // Filtered apps based on search
+    val filteredApps = combine(_searchQuery, categorizedApps) { query, apps ->
+        if (query.isBlank()) {
+            apps
+        } else {
+            apps.mapValues { (_, appList) ->
+                appList.filter { app ->
+                    app.name.contains(query, ignoreCase = true) ||
+                    app.packageName.contains(query, ignoreCase = true)
+                }
+            }.filterValues { it.isNotEmpty() }
+        }
+    }
 
     // Media status
     val mediaStatus = systemRepository.mediaStatus
@@ -129,6 +148,20 @@ class MainViewModel(
         viewModelScope.launch {
             appRepository.launchApp(packageName)
         }
+    }
+
+    /**
+     * Update search query
+     */
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    /**
+     * Clear search query
+     */
+    fun clearSearch() {
+        _searchQuery.value = ""
     }
 }
 

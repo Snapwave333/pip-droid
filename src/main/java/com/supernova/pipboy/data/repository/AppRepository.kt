@@ -1,10 +1,13 @@
 package com.supernova.pipboy.data.repository
 
+import android.app.usage.UsageStats
+import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.core.content.ContextCompat
 import com.supernova.pipboy.data.model.AppInfo
 import com.supernova.pipboy.data.model.AppCategory
@@ -34,7 +37,15 @@ class AppRepository(
     private val _categorizedApps = MutableStateFlow<Map<AppCategory, List<AppInfo>>>(emptyMap())
     val categorizedApps: StateFlow<Map<AppCategory, List<AppInfo>>> = _categorizedApps
 
+    private val _recentApps = MutableStateFlow<List<AppInfo>>(emptyList())
+    val recentApps: StateFlow<List<AppInfo>> = _recentApps
+
     private val packageManager = context.packageManager
+    private val usageStatsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        context.getSystemService(Context.USAGE_STATS_SERVICE) as? UsageStatsManager
+    } else {
+        null
+    }
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     init {
@@ -56,6 +67,10 @@ class AppRepository(
 
             val categorized = categorizeApps(apps)
             _categorizedApps.value = categorized
+
+            // Also refresh recent apps
+            val recent = loadRecentApps(apps)
+            _recentApps.value = recent
         }
     }
 
@@ -121,12 +136,12 @@ class AppRepository(
                     // Skip system apps unless they're important system apps
                     if (appInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0) {
                         if (isImportantSystemApp(packageName)) {
-                            apps.add(AppInfo(appName, packageName, AppCategory.HEALTH))
+                            apps.add(AppInfo(appName, packageName, AppCategory.HEALTH, icon))
                         }
                     } else {
                         // User app - categorize it
                         val category = categorizeApp(packageName, appName)
-                        apps.add(AppInfo(appName, packageName, category))
+                        apps.add(AppInfo(appName, packageName, category, icon))
                     }
                 } catch (e: Exception) {
                     // Skip apps that can't be loaded
@@ -181,6 +196,51 @@ class AppRepository(
                packageName == "com.android.contacts" ||
                packageName == "com.android.messaging" ||
                packageName.startsWith("com.android.systemui")
+    }
+
+    /**
+     * Load recently used apps using UsageStatsManager
+     */
+    private suspend fun loadRecentApps(allApps: List<AppInfo>): List<AppInfo> {
+        return withContext(Dispatchers.IO) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 || usageStatsManager == null) {
+                // Fall back to empty list if UsageStats not available
+                return@withContext emptyList()
+            }
+
+            try {
+                // Get usage stats for the last 24 hours
+                val endTime = System.currentTimeMillis()
+                val startTime = endTime - (1000 * 60 * 60 * 24) // 24 hours ago
+
+                val usageStatsList = usageStatsManager.queryUsageStats(
+                    UsageStatsManager.INTERVAL_DAILY,
+                    startTime,
+                    endTime
+                )
+
+                if (usageStatsList.isNullOrEmpty()) {
+                    return@withContext emptyList()
+                }
+
+                // Sort by last time used and get top 8 apps
+                val recentPackages = usageStatsList
+                    .filter { it.lastTimeUsed > 0 && it.packageName != context.packageName }
+                    .sortedByDescending { it.lastTimeUsed }
+                    .take(8)
+                    .map { it.packageName }
+                    .toSet()
+
+                // Map package names to AppInfo objects
+                allApps.filter { it.packageName in recentPackages }
+                    .sortedByDescending { app ->
+                        usageStatsList.find { it.packageName == app.packageName }?.lastTimeUsed ?: 0
+                    }
+            } catch (e: Exception) {
+                // If we don't have usage stats permission, return empty list
+                emptyList()
+            }
+        }
     }
 }
 

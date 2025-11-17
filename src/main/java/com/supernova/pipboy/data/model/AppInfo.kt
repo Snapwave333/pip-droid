@@ -1,5 +1,7 @@
 package com.supernova.pipboy.data.model
 
+import android.graphics.drawable.Drawable
+
 /**
  * Data class representing application information
  */
@@ -7,6 +9,7 @@ data class AppInfo(
     val name: String,
     val packageName: String,
     val category: AppCategory,
+    val icon: Drawable? = null,
     val isFavorite: Boolean = false,
     val installTime: Long = 0,
     val lastUsedTime: Long = 0,
