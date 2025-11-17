@@ -1,6 +1,18 @@
 package com.supernova.pipboy.ui.screens
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,29 +29,151 @@ import com.supernova.pipboy.ui.components.PipBoyCompass
 import com.supernova.pipboy.ui.theme.PipBoyTypography
 import com.supernova.pipboy.ui.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
+import java.util.Locale
 import kotlin.math.*
 
 /**
- * MAP tab - Navigation and location services
+ * MAP tab - Navigation and location services with real GPS and compass
  */
 @Composable
 fun MapScreen(viewModel: MainViewModel) {
     val primaryColor by viewModel.primaryColor.collectAsState()
     val context = LocalContext.current
 
-    // Simulated GPS coordinates (in a real app, these would come from GPS)
+    // Real GPS coordinates
     var currentLocation by remember {
-        mutableStateOf(LocationData(40.7128, -74.0060, "NEW YORK"))
+        mutableStateOf(LocationData(0.0, 0.0, "ACQUIRING GPS SIGNAL..."))
     }
 
-    // Simulated heading (in a real app, this would come from compass sensor)
+    // Real compass heading
     var currentHeading by remember { mutableStateOf(0f) }
 
-    // Animate compass rotation
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(100) // Update 10 times per second
-            currentHeading = (currentHeading + 2f) % 360f // Slow rotation for demo
+    // Setup real GPS location tracking
+    DisposableEffect(context) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                val locationName = getLocationName(context, location.latitude, location.longitude)
+                currentLocation = LocationData(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    name = locationName
+                )
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
+
+        // Request location updates if permission granted
+        try {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // Try GPS first
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        5000L, // 5 seconds
+                        10f,   // 10 meters
+                        locationListener
+                    )
+
+                    // Get last known location immediately
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let { location ->
+                        val locationName = getLocationName(context, location.latitude, location.longitude)
+                        currentLocation = LocationData(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            name = locationName
+                        )
+                    }
+                }
+
+                // Fallback to network provider
+                if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        5000L,
+                        10f,
+                        locationListener
+                    )
+
+                    // If GPS didn't work, try network location
+                    if (currentLocation.name == "ACQUIRING GPS SIGNAL...") {
+                        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.let { location ->
+                            val locationName = getLocationName(context, location.latitude, location.longitude)
+                            currentLocation = LocationData(
+                                latitude = location.latitude,
+                                longitude = location.longitude,
+                                name = locationName
+                            )
+                        }
+                    }
+                }
+            } else {
+                currentLocation = LocationData(0.0, 0.0, "LOCATION PERMISSION REQUIRED")
+            }
+        } catch (e: Exception) {
+            currentLocation = LocationData(0.0, 0.0, "GPS UNAVAILABLE")
+        }
+
+        onDispose {
+            try {
+                locationManager.removeUpdates(locationListener)
+            } catch (e: Exception) {
+                // Ignore
+            }
+        }
+    }
+
+    // Setup real compass sensor
+    DisposableEffect(context) {
+        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+            ?: sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+
+        val sensorListener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent?) {
+                event?.let {
+                    if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                        val rotationMatrix = FloatArray(9)
+                        val orientationAngles = FloatArray(3)
+
+                        SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+                        SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+                        // Convert radians to degrees and normalize
+                        val azimuth = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+                        currentHeading = (azimuth + 360f) % 360f
+                    } else if (event.sensor.type == Sensor.TYPE_ORIENTATION) {
+                        // Deprecated but fallback for older devices
+                        currentHeading = event.values[0]
+                    }
+                }
+            }
+
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+
+        // Register sensor listener
+        rotationSensor?.let {
+            sensorManager.registerListener(
+                sensorListener,
+                it,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
+
+        onDispose {
+            sensorManager.unregisterListener(sensorListener)
         }
     }
 
@@ -242,6 +376,30 @@ private fun LocationInfo(
             style = PipBoyTypography.bodyMedium.copy(fontSize = 12.sp),
             color = primaryColor.toComposeColor().copy(alpha = 0.6f)
         )
+    }
+}
+
+/**
+ * Get location name from coordinates using Geocoder
+ */
+private fun getLocationName(context: Context, latitude: Double, longitude: Double): String {
+    return try {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+
+        if (!addresses.isNullOrEmpty()) {
+            val address = addresses[0]
+            // Try to get city, then locality, then area, then country
+            address.locality?.uppercase()
+                ?: address.subAdminArea?.uppercase()
+                ?: address.adminArea?.uppercase()
+                ?: address.countryName?.uppercase()
+                ?: "UNKNOWN LOCATION"
+        } else {
+            "LAT: ${String.format("%.4f", latitude)}, LON: ${String.format("%.4f", longitude)}"
+        }
+    } catch (e: Exception) {
+        "LAT: ${String.format("%.4f", latitude)}, LON: ${String.format("%.4f", longitude)}"
     }
 }
 

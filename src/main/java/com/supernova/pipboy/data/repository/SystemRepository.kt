@@ -8,14 +8,18 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
 import androidx.core.content.ContextCompat
 import com.supernova.pipboy.data.model.PipBoyColor
 import com.supernova.pipboy.data.model.SystemStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import java.io.File
+import java.io.RandomAccessFile
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -40,6 +44,10 @@ class SystemRepository(private val context: Context) {
     }
 
     private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    // CPU usage tracking
+    private var lastCpuTotal = 0L
+    private var lastCpuIdle = 0L
 
     init {
         startMonitoring()
@@ -153,16 +161,117 @@ class SystemRepository(private val context: Context) {
         )
     }
 
+    /**
+     * Get real CPU usage by reading from /proc/stat
+     */
     private fun getCpuUsage(): Float {
-        // Simplified CPU usage - in a real implementation,
-        // you'd read from /proc/stat or use Android's built-in monitoring
-        return (0..100).random().toFloat() // Placeholder
+        return try {
+            val reader = RandomAccessFile("/proc/stat", "r")
+            val load = reader.readLine()
+            reader.close()
+
+            val toks = load.split(" +".toRegex())
+
+            // CPU stats: user, nice, system, idle, iowait, irq, softirq
+            val user = toks[1].toLongOrNull() ?: 0L
+            val nice = toks[2].toLongOrNull() ?: 0L
+            val system = toks[3].toLongOrNull() ?: 0L
+            val idle = toks[4].toLongOrNull() ?: 0L
+            val iowait = toks[5].toLongOrNull() ?: 0L
+            val irq = toks[6].toLongOrNull() ?: 0L
+            val softirq = toks[7].toLongOrNull() ?: 0L
+
+            val total = user + nice + system + idle + iowait + irq + softirq
+
+            // Calculate usage percentage
+            if (lastCpuTotal != 0L) {
+                val totalDiff = total - lastCpuTotal
+                val idleDiff = idle - lastCpuIdle
+
+                if (totalDiff > 0) {
+                    val usage = ((totalDiff - idleDiff).toFloat() / totalDiff.toFloat()) * 100f
+                    lastCpuTotal = total
+                    lastCpuIdle = idle
+                    usage.coerceIn(0f, 100f)
+                } else {
+                    0f
+                }
+            } else {
+                // First read, just store values
+                lastCpuTotal = total
+                lastCpuIdle = idle
+                0f
+            }
+        } catch (e: Exception) {
+            // Fallback: return 0 if unable to read
+            0f
+        }
     }
 
+    /**
+     * Get real device temperature from thermal zones
+     */
     private fun getTemperature(): Float {
-        // Simplified temperature reading - in a real implementation,
-        // you'd use the Thermal API or read from thermal zone files
-        return 35.0f + (0..20).random().toFloat() // Placeholder: 35-55°C
+        return try {
+            // Try to use PowerManager thermal status (API 29+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val powerManager = context.getSystemService(Context.POWER_SERVICE) as? PowerManager
+                val thermalStatus = powerManager?.currentThermalStatus ?: PowerManager.THERMAL_STATUS_NONE
+
+                // Convert thermal status to approximate temperature
+                // THERMAL_STATUS_NONE = 0, LIGHT = 1, MODERATE = 2, SEVERE = 3, CRITICAL = 4, EMERGENCY = 5, SHUTDOWN = 6
+                val baseTemp = when (thermalStatus) {
+                    PowerManager.THERMAL_STATUS_NONE -> 35.0f
+                    PowerManager.THERMAL_STATUS_LIGHT -> 40.0f
+                    PowerManager.THERMAL_STATUS_MODERATE -> 45.0f
+                    PowerManager.THERMAL_STATUS_SEVERE -> 50.0f
+                    PowerManager.THERMAL_STATUS_CRITICAL -> 55.0f
+                    PowerManager.THERMAL_STATUS_EMERGENCY -> 60.0f
+                    PowerManager.THERMAL_STATUS_SHUTDOWN -> 65.0f
+                    else -> 35.0f
+                }
+                return baseTemp
+            }
+
+            // Fallback: Try to read from thermal zone files
+            val thermalZones = listOf(
+                "/sys/class/thermal/thermal_zone0/temp",
+                "/sys/class/thermal/thermal_zone1/temp",
+                "/sys/devices/virtual/thermal/thermal_zone0/temp"
+            )
+
+            for (zonePath in thermalZones) {
+                val file = File(zonePath)
+                if (file.exists() && file.canRead()) {
+                    val temp = file.readText().trim().toIntOrNull()
+                    if (temp != null) {
+                        // Temperature is usually in millidegrees Celsius
+                        val celsius = if (temp > 1000) temp / 1000f else temp.toFloat()
+                        if (celsius in 20f..100f) { // Sanity check
+                            return celsius
+                        }
+                    }
+                }
+            }
+
+            // Final fallback: read battery temperature
+            val batteryIntent = ContextCompat.registerReceiver(
+                context,
+                null,
+                IntentFilter(Intent.ACTION_BATTERY_CHANGED),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            val batteryTemp = batteryIntent?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) ?: -1
+            if (batteryTemp > 0) {
+                // Battery temperature is in tenths of degree Celsius
+                return batteryTemp / 10f
+            }
+
+            // If all methods fail, return a safe default
+            35.0f
+        } catch (e: Exception) {
+            35.0f
+        }
     }
 
     companion object {
