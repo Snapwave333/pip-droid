@@ -29,15 +29,80 @@ import com.supernova.pipboy.ui.viewmodel.MainViewModel
  */
 @Composable
 fun InventoryScreen(viewModel: MainViewModel) {
-    val categorizedApps by viewModel.categorizedApps.collectAsState()
+    val filteredApps by viewModel.filteredApps.collectAsState(emptyMap())
     val favoriteApps by viewModel.favoriteApps.collectAsState()
+    val recentApps by viewModel.recentApps.collectAsState()
     val primaryColor by viewModel.primaryColor.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Search bar
+        androidx.compose.material3.OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { viewModel.updateSearchQuery(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            placeholder = {
+                androidx.compose.material3.Text(
+                    "SEARCH INVENTORY...",
+                    color = primaryColor.toComposeColor().copy(alpha = 0.5f)
+                )
+            },
+            textStyle = PipBoyTypography.bodyMedium.copy(color = primaryColor.toComposeColor()),
+            colors = androidx.compose.material3.TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = primaryColor.toComposeColor(),
+                unfocusedIndicatorColor = primaryColor.toComposeColor().copy(alpha = 0.5f),
+                cursorColor = primaryColor.toComposeColor()
+            ),
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    androidx.compose.material3.IconButton(
+                        onClick = { viewModel.clearSearch() }
+                    ) {
+                        androidx.compose.material3.Text(
+                            "X",
+                            color = primaryColor.toComposeColor(),
+                            style = PipBoyTypography.bodyMedium
+                        )
+                    }
+                }
+            },
+            singleLine = true
+        )
+
+        // Recent Apps Section
+        if (recentApps.isNotEmpty() && searchQuery.isEmpty()) {
+            androidx.compose.material3.Text(
+                text = "RECENT ACTIVITY",
+                style = PipBoyTypography.bodyLarge,
+                color = primaryColor.toComposeColor(),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(recentApps.take(8)) { app ->
+                    FavoriteAppItem(
+                        app = app,
+                        primaryColor = primaryColor,
+                        onClick = { viewModel.launchApp(app.packageName) },
+                        onToggleFavorite = { viewModel.toggleFavoriteApp(app.packageName) }
+                    )
+                }
+            }
+        }
+
         // Favorites Dock
         androidx.compose.material3.Text(
             text = "FAVORITES/REQUISITIONED TOOLS",
@@ -68,7 +133,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // WEAPONS Category
-            categorizedApps[AppCategory.GAME]?.let { weapons ->
+            filteredApps[AppCategory.GAME]?.let { weapons ->
                 item {
                     AppCategorySection(
                         title = "WEAPONS",
@@ -82,7 +147,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             }
 
             // AID Category
-            categorizedApps[AppCategory.UTILITIES]?.let { aid ->
+            filteredApps[AppCategory.UTILITIES]?.let { aid ->
                 item {
                     AppCategorySection(
                         title = "AID",
@@ -96,7 +161,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             }
 
             // MISC Category
-            categorizedApps[AppCategory.OTHER]?.let { misc ->
+            filteredApps[AppCategory.OTHER]?.let { misc ->
                 item {
                     AppCategorySection(
                         title = "MISC",
@@ -122,17 +187,32 @@ private fun FavoriteAppItem(
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.width(60.dp)
     ) {
-        // Placeholder icon - TODO: Add icon support to AppInfo
+        // Display actual app icon with monochrome effect
         Box(
             modifier = Modifier
                 .size(48.dp)
-                .background(Color(primaryColor.red, primaryColor.green, primaryColor.blue))
-                .clickable(onClick = onClick)
-        )
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) {
+            app.icon?.let { drawable ->
+                MonochromeIcon(
+                    painter = BitmapPainter(drawable.toBitmap().asImageBitmap()),
+                    contentDescription = app.name,
+                    tint = primaryColor.toComposeColor(),
+                    modifier = Modifier.size(48.dp)
+                )
+            } ?: Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(Color(primaryColor.red, primaryColor.green, primaryColor.blue))
+            )
+        }
 
         androidx.compose.material3.Text(
             text = app.name.take(8), // Truncate long names
@@ -202,12 +282,24 @@ private fun AppListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Placeholder icon - TODO: Add icon support to AppInfo
+        // Display actual app icon with monochrome effect
         Box(
-            modifier = Modifier
-                .size(32.dp)
-                .background(Color(primaryColor.red, primaryColor.green, primaryColor.blue))
-        )
+            modifier = Modifier.size(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            app.icon?.let { drawable ->
+                MonochromeIcon(
+                    painter = BitmapPainter(drawable.toBitmap().asImageBitmap()),
+                    contentDescription = app.name,
+                    tint = primaryColor.toComposeColor(),
+                    modifier = Modifier.size(32.dp)
+                )
+            } ?: Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(Color(primaryColor.red, primaryColor.green, primaryColor.blue))
+            )
+        }
 
         Column(
             modifier = Modifier.weight(1f)

@@ -121,7 +121,7 @@ fun PhosphorGlowEffect(
 }
 
 /**
- * Screen flicker effect
+ * Screen flicker effect (optimized)
  */
 @Composable
 fun FlickerEffect(
@@ -130,18 +130,28 @@ fun FlickerEffect(
     enabled: Boolean = true
 ) {
     if (!enabled) return
-    
+
     var flickerAlpha by remember { mutableStateOf(0f) }
-    
+
+    // Pre-generate random values to avoid continuous random generation
+    val flickerDelays = remember {
+        List(10) { kotlin.random.Random.nextLong(100, 500) }
+    }
+    val flickerAlphas = remember {
+        List(10) { kotlin.random.Random.nextFloat() * 0.1f }
+    }
+
     LaunchedEffect(Unit) {
+        var index = 0
         while (true) {
-            kotlinx.coroutines.delay(kotlin.random.Random.nextLong(100, 500))
-            flickerAlpha = kotlin.random.Random.nextFloat() * 0.1f
+            kotlinx.coroutines.delay(flickerDelays[index % flickerDelays.size])
+            flickerAlpha = flickerAlphas[index % flickerAlphas.size]
             kotlinx.coroutines.delay(50)
             flickerAlpha = 0f
+            index++
         }
     }
-    
+
     Canvas(modifier = modifier.fillMaxSize()) {
         if (flickerAlpha > 0f) {
             drawRect(
@@ -257,7 +267,7 @@ fun ChromaticAberrationEffect(
 }
 
 /**
- * Noise/static effect
+ * Noise/static effect (optimized)
  */
 @Composable
 fun NoiseEffect(
@@ -266,27 +276,42 @@ fun NoiseEffect(
     enabled: Boolean = true
 ) {
     if (!enabled) return
-    
+
     var noisePhase by remember { mutableStateOf(0f) }
-    
+
+    // Pre-generate noise pixel positions to avoid random generation in draw scope
+    val noisePixels = remember(noiseIntensity) {
+        val pixelCount = (1920 * 1080 * noiseIntensity).toInt() // Assume max screen size
+        List(pixelCount) {
+            Triple(
+                kotlin.random.Random.nextFloat(),
+                kotlin.random.Random.nextFloat(),
+                0.1f + kotlin.random.Random.nextFloat() * 0.2f
+            )
+        }
+    }
+
     LaunchedEffect(Unit) {
         while (true) {
             kotlinx.coroutines.delay(50)
-            noisePhase = kotlin.random.Random.nextFloat()
+            noisePhase = if (noisePhase > 0.5f) 0.2f else 1f
         }
     }
-    
+
     Canvas(modifier = modifier.fillMaxSize()) {
-        // Draw random noise pixels
+        // Draw pre-calculated noise pixels
         val pixelSize = 2f
         val width = size.width
         val height = size.height
-        
-        repeat((width * height * noiseIntensity).toInt()) {
-            val x = kotlin.random.Random.nextInt(0, width.toInt() + 1).toFloat()
-            val y = kotlin.random.Random.nextInt(0, height.toInt() + 1).toFloat()
-            val alpha = (0.1f + kotlin.random.Random.nextFloat() * 0.2f) * noisePhase
-            
+
+        val visiblePixels = (width * height * noiseIntensity).toInt()
+
+        for (i in 0 until minOf(visiblePixels, noisePixels.size)) {
+            val (xRatio, yRatio, baseAlpha) = noisePixels[i]
+            val x = xRatio * width
+            val y = yRatio * height
+            val alpha = baseAlpha * noisePhase
+
             drawRect(
                 color = Color.White.copy(alpha = alpha),
                 topLeft = Offset(x, y),
