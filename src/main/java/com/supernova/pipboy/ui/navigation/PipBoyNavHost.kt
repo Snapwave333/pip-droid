@@ -94,7 +94,7 @@ fun PipBoyNavHost(viewModel: MainViewModel) {
                     PipBoyTab.INVENTORY -> InventoryScreen(viewModel)
                     PipBoyTab.DATA -> DataScreen(viewModel)
                     PipBoyTab.MAP -> MapScreen(viewModel)
-                    PipBoyTab.RADIO -> RadioScreen(viewModel)
+                    PipBoyTab.RADIO -> RadioScreenWithPlayer(viewModel)
                     PipBoyTab.ACHIEVEMENTS -> AchievementsScreen(
                         achievementManager = app.achievementManager
                     )

@@ -27,6 +27,8 @@ class PipBoyApplication : Application() {
     lateinit var preferences: com.supernova.pipboy.data.preferences.PipBoyPreferences
     lateinit var soundManager: com.supernova.pipboy.audio.SoundManager
     lateinit var achievementManager: com.supernova.pipboy.data.achievements.AchievementManager
+    lateinit var radioPlayerManager: com.supernova.pipboy.audio.RadioPlayerManager
+    lateinit var localRadioScanner: com.supernova.pipboy.audio.LocalRadioScanner
     private lateinit var securityUtils: SecurityUtils
     private lateinit var timberTree: Timber.Tree
     private lateinit var crashlyticsManager: CrashlyticsManagerStub
@@ -85,6 +87,8 @@ class PipBoyApplication : Application() {
             appRepository = com.supernova.pipboy.data.repository.AppRepository(this, preferences)
             soundManager = com.supernova.pipboy.audio.SoundManager(this)
             achievementManager = com.supernova.pipboy.data.achievements.AchievementManager(this, preferences, soundManager)
+            radioPlayerManager = com.supernova.pipboy.audio.RadioPlayerManager(this)
+            localRadioScanner = com.supernova.pipboy.audio.LocalRadioScanner(this)
             securityUtils = SecurityUtils(this)
             timberTree = if (com.supernova.pipboy.BuildConfig.DEBUG) {
                 Timber.DebugTree()
