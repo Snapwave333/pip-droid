@@ -306,156 +306,28 @@ Productivity overlay mode:
 
 ---
 
-## 📸 Gallery & Features Showcase
+## 📸 Features Showcase
 
 <div align="center">
-
-### 🎯 **Experience the Wasteland on Your Device** 🎯
-
-</div>
 
 <table>
 <tr>
-<td width="33%" align="center">
-
-### 🏠 **C.A.M.P. Desktop**
-**Your Productivity Hub**
-
-📱 Real app icons themed<br>
-🔍 Instant search<br>
-⭐ Favorites dock<br>
-📊 Recent apps tracking<br>
-🎨 Monochrome filters<br>
-
-*Transform productivity into survival*
-
-</td>
-<td width="33%" align="center">
-
-### 📻 **Radio Station**
-**Fallout.FM Integration**
-
-🎵 8 Fallout radio stations<br>
-📡 Real audio streaming<br>
-🔊 Volume controls<br>
-⏯️ Full playback system<br>
-🔍 Station scanner<br>
-
-*Galaxy News Radio & more*
-
-</td>
-<td width="33%" align="center">
-
-### ⚡ **S.P.E.C.I.A.L. Stats**
-**Real-Time Monitoring**
-
-📊 Live system metrics<br>
-🔋 Battery tracking<br>
-🌡️ Temperature sensors<br>
-💾 Storage status<br>
-📶 Network monitoring<br>
-
-*Your device's Vault-Tec stats*
-
-</td>
+<td width="20%"><b>🏠 C.A.M.P. Desktop</b><br><sub>Real app icons • Search • Favorites • Recent apps</sub></td>
+<td width="20%"><b>📻 Radio Station</b><br><sub>8 Fallout.FM stations • Live streaming</sub></td>
+<td width="20%"><b>⚡ S.P.E.C.I.A.L. Stats</b><br><sub>Live metrics • Battery • Temperature</sub></td>
+<td width="20%"><b>🗺️ Local Map</b><br><sub>GPS • Compass • Geocoding</sub></td>
+<td width="20%"><b>📝 Quest Log</b><br><sub>Tasks • XP system • Leveling</sub></td>
 </tr>
 <tr>
-<td width="33%" align="center">
-
-### 🗺️ **Local Map**
-**GPS Navigation**
-
-📍 Real GPS coordinates<br>
-🧭 Compass sensor<br>
-🌐 Geocoder integration<br>
-🗺️ Location tracking<br>
-📱 Map app launcher<br>
-
-*Navigate the wasteland*
-
-</td>
-<td width="33%" align="center">
-
-### 📝 **Quest Log**
-**Gamified Productivity**
-
-✅ Task management<br>
-🏆 XP & leveling system<br>
-📅 Quest tracking<br>
-💯 Completion rewards<br>
-📊 Progress analytics<br>
-
-*Level up your tasks*
-
-</td>
-<td width="33%" align="center">
-
-### 🏆 **Achievements**
-**Unlock Your Potential**
-
-🎯 25+ achievements<br>
-🔓 Hidden unlockables<br>
-📊 Progress tracking<br>
-🔔 Notifications<br>
-🎮 Easter eggs<br>
-
-*Become a wasteland legend*
-
-</td>
-</tr>
-<tr>
-<td width="33%" align="center">
-
-### 💻 **Terminal Mode**
-**Developer Tools**
-
-⌨️ 40+ commands<br>
-🔧 System diagnostics<br>
-🎨 Theme customization<br>
-🐛 Debug utilities<br>
-🎁 Secret commands<br>
-
-*Your V.A.T.S. for Android*
-
-</td>
-<td width="33%" align="center">
-
-### 📊 **Inventory Manager**
-**App Organization**
-
-📦 Categorized apps<br>
-🎯 Smart filtering<br>
-🔍 Real-time search<br>
-⭐ Favorites system<br>
-🖼️ Icon theming<br>
-
-*Manage your arsenal*
-
-</td>
-<td width="33%" align="center">
-
-### 🎨 **Custom Themes**
-**Personalization**
-
-🌈 RGB color picker<br>
-🎨 Preset themes<br>
-📺 CRT effects toggle<br>
-✨ Scanline intensity<br>
-💾 Save presets<br>
-
-*Make it your own Pip-Boy*
-
-</td>
+<td width="20%"><b>🏆 Achievements</b><br><sub>25+ unlockables • Progress tracking</sub></td>
+<td width="20%"><b>💻 Terminal Mode</b><br><sub>40+ commands • Diagnostics</sub></td>
+<td width="20%"><b>📊 Inventory</b><br><sub>App organization • Smart search</sub></td>
+<td width="20%"><b>🎨 Custom Themes</b><br><sub>RGB picker • CRT effects</sub></td>
+<td width="20%"><b>🎮 Easter Eggs</b><br><sub>Hidden features • Developer secrets</sub></td>
 </tr>
 </table>
 
-<br>
-
-<div align="center">
-
-> **📱 Screenshots coming soon!** Build the app and see it in action on your device!
->
-> 🚀 **[Download the latest release](#-installation)** • **[Build from source](#-building-from-source)**
+> **📱 No screenshots yet** - Build the app and see it in action!
 
 </div>
 
